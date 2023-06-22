@@ -9,7 +9,7 @@ A rust crate for using the [Transport for London (TFL) API](https://api.tfl.gov.
 Using `cargo`, add this to your project's `Cargo.toml`:
 ```toml
 [dependencies]
-tfl_api_wrapper = "0.1.0"
+tfl-api-wrapper = "0.1.0"
 ```
 
 ## Implemented APIs
