@@ -9,7 +9,7 @@ A rust crate for using the [Transport for London (TFL) API](https://api.tfl.gov.
 Using `cargo`, add this to your project's `Cargo.toml`:
 ```toml
 [dependencies]
-tfl-api-wrapper = "0.1.0"
+tfl-api-wrapper = "0.1.1"
 ```
 
 ## Implemented APIs
@@ -24,11 +24,13 @@ Currently only the version for the API is implemented.
 
 ### Use the crate
 
+Set the `APP_KEY` environment variable.
+
 Instantiate the `Client` using:
 
 ```rust
 use tfl_api_wrapper::{Client, RequestBuilder};
-let client = Client::new("APP_KEY".into);
+let client = Client::new(env::var("APP_KEY").unwrap().into());
 ```
 Here `APP_KEY` could be either `Primary key` or `Secondary key`.
 
@@ -36,10 +38,7 @@ Here `APP_KEY` could be either `Primary key` or `Secondary key`.
 
 Get the API version:
 ```rust
-let vers = client
-    .api_version()
-    .fetch()
-    .await;
+let ver = client.api_version().fetch().await.unwrap();
 ```
 
 ## Tests
