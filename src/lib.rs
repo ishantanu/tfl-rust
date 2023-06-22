@@ -1,3 +1,4 @@
+#![doc = include_str!("../README.md")]
 pub use self::client::Client;
 pub use self::request::RequestBuilder;
 
