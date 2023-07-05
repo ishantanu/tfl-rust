@@ -1,7 +1,7 @@
 # TFL API Wrapper
 
 A rust crate for using the [Transport for London (TFL) API](https://api.tfl.gov.uk).
-
+[Cargo.toml](Cargo.toml)
 *Note: This is currently WIP and not ready for use.*
 
 ## Installation
@@ -9,7 +9,7 @@ A rust crate for using the [Transport for London (TFL) API](https://api.tfl.gov.
 Using `cargo`, add this to your project's `Cargo.toml`:
 ```toml
 [dependencies]
-tfl-api-wrapper = "0.1.1"
+tfl-api-wrapper = "0.1.2"
 ```
 
 ## Implemented APIs
@@ -30,7 +30,7 @@ Instantiate the `Client` using:
 
 ```rust
 use tfl_api_wrapper::{Client, RequestBuilder};
-let client = Client::new(env::var("APP_KEY").unwrap().into());
+let client = Client::new(std::env::var("APP_KEY").unwrap());
 ```
 Here `APP_KEY` could be either `Primary key` or `Secondary key`.
 
@@ -38,7 +38,11 @@ Here `APP_KEY` could be either `Primary key` or `Secondary key`.
 
 Get the API version:
 ```rust
-let ver = client.api_version().fetch().await.unwrap();
+async fn it_is_version_1() {
+    use tfl_api_wrapper::{Client, RequestBuilder};
+    let client = Client::new(std::env::var("APP_KEY").unwrap());
+    let ver = client.api_version().fetch().await.unwrap();
+}
 ```
 
 ## Tests
@@ -49,7 +53,7 @@ APP_KEY=hjdhajsdas cargo test
 
 ## References/Credits
 1. Existing tfl wrappers
-    1. [tfl-api-wrapper](https://github.com/ZackaryH8/tfl-api-wrapper) - NodeJS wrapper for TFL API, made with TypeScript.
-    2. [tfl-api-wrapper-py](https://github.com/ZackaryH8/tfl-api-wrapper-py) - Python wrapper for TFL API
-    3. [go-tfl](https://github.com/ZackaryH8/go-tfl) - Go client for TFL API
+   1. [tfl-api-wrapper](https://github.com/ZackaryH8/tfl-api-wrapper) - NodeJS wrapper for TFL API, made with TypeScript.
+   2. [tfl-api-wrapper-py](https://github.com/ZackaryH8/tfl-api-wrapper-py) - Python wrapper for TFL API
+   3. [go-tfl](https://github.com/ZackaryH8/go-tfl) - Go client for TFL API
 2. [Adzuna-rs](https://github.com/kamui-fin/adzuna-rs) - For existing wrapper implementation for Adzuna API.
