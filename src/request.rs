@@ -47,7 +47,8 @@ pub trait RequestBuilder {
             .map_err(|e| Error::from_status(e.status().unwrap_or(StatusCode::BAD_REQUEST)))?;
 
         let status = response.status();
-        println!("{:?}", response);
+        // todo: implement an appropriate logging solution
+        // println!("{:?}", response);
         if status != StatusCode::OK {
             return Err(Error::new(
                 response.json::<models::ApiException>().await.ok(),
@@ -80,11 +81,11 @@ create_endpoint!(VersionRequest);
 impl RequestBuilder for VersionRequest<'_> {
     type Response = models::Version;
 
-    fn get_client(&self) -> &Client {
-        self.client
-    }
-
     fn get_request_url(&self) -> String {
         "/version".into()
+    }
+
+    fn get_client(&self) -> &Client {
+        self.client
     }
 }
