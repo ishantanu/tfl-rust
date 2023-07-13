@@ -24,4 +24,13 @@ impl Client {
     // pub fn line(&self) -> LineRequest {
     //    LineRequest::new(Self)
     //}
+
+    pub fn routes(&self) -> RouteRequest<'_> {
+        RouteRequest::new(self)
+    }
+
+    pub fn routes_by_id(&self) -> RouteRequestById<'_> {
+        RouteRequestById::new(self)
+    }
+    
 }
