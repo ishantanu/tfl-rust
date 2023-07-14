@@ -2,8 +2,8 @@
 mod tests {
     use std::env;
 
+    use tfl_api_wrapper::models::{self};
     use tfl_api_wrapper::{Client, RequestBuilder};
-    use tfl_api_wrapper::models::ServiceTypes;
 
     fn get_client() -> Client {
         Client::new(env::var("APP_KEY").unwrap())
@@ -14,15 +14,20 @@ mod tests {
         let client = get_client();
         let ver = client.api_version().fetch().await.unwrap();
         println!("aaa {:?}", ver);
-       assert_eq!(ver.version, "master.5758\r\n");
+        assert_eq!(ver.version, "master.5758\r\n");
     }
 
     #[tokio::test]
-    async fn it_fetches_routes () {
+    async fn it_fetches_routes() {
         let client = get_client();
-        let routes = client.routes().service_type(ServiceTypes::Regular).fetch().await.unwrap();
+        let routes = client
+            .routes()
+            .service_type(models::ServiceTypes::Regular)
+            .fetch()
+            .await
+            .unwrap();
         for trains in routes.clone() {
-            if trains.mode_name ==  "tube" {
+            if trains.mode_name == "tube" {
                 println!("{}", trains.name)
             }
         }
@@ -30,12 +35,32 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn it_fetches_routes_by_id () {
+    async fn it_fetches_routes_by_id() {
         let client = get_client();
 
-        let route = client.routes_by_id().line(tfl_api_wrapper::models::LineID::Bakerloo).fetch().await.unwrap();
+        let route = client
+            .routes_by_id()
+            .line(models::LineID::Bakerloo)
+            .fetch()
+            .await
+            .unwrap();
         assert_eq!(route.name, "Bakerloo");
     }
 
+    #[tokio::test]
+    async fn it_fetches_disruptions_by_mode() {
+        let client = get_client();
 
+        let disruptions = client
+            .disruptions_by_mode()
+            .mode(models::Mode::Bus)
+            .fetch()
+            .await
+            .unwrap();
+        if disruptions.len() == 0 {
+            assert!(disruptions.is_empty());
+        } else {
+            assert!(!disruptions.is_empty());
+        }
+    }
 }

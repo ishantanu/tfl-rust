@@ -1,4 +1,7 @@
-use crate::request::*;
+use crate::{
+    line::{DisruptionByMode, RouteRequest, RouteRequestById},
+    request::*,
+};
 
 // Client for accessing TFL API
 pub struct Client {
@@ -32,5 +35,8 @@ impl Client {
     pub fn routes_by_id(&self) -> RouteRequestById<'_> {
         RouteRequestById::new(self)
     }
-    
+
+    pub fn disruptions_by_mode(&self) -> DisruptionByMode<'_> {
+        DisruptionByMode::new(self)
+    }
 }

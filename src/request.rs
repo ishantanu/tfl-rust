@@ -71,7 +71,7 @@ macro_rules! create_endpoint {
         }
         impl<'a> $name<'a> {
             pub(crate) fn new(client: &'a Client) -> Self {
-                Self { 
+                Self {
                     client,
                     parameters: Default::default(),
                 }
@@ -79,6 +79,8 @@ macro_rules! create_endpoint {
         }
     };
 }
+
+pub(crate) use create_endpoint;
 
 create_endpoint!(VersionRequest);
 
@@ -89,7 +91,7 @@ impl RequestBuilder for VersionRequest<'_> {
         "/version".into()
     }
 
-    fn get_parameters(&self) ->  &models::Parameters {
+    fn get_parameters(&self) -> &models::Parameters {
         &self.parameters
     }
 
@@ -97,60 +99,3 @@ impl RequestBuilder for VersionRequest<'_> {
         self.client
     }
 }
-
-create_endpoint!(RouteRequest);
-
-impl RequestBuilder for RouteRequest<'_> {
-    type Response = models::Line;
-
-    fn get_client(&self) ->  &Client {
-        self.client
-    }
-
-    fn get_parameters(&self) ->  &models::Parameters {
-        &self.parameters
-    }
-
-    fn get_request_url(&self) -> String {
-        format!("/Line/Route?{}", self.get_parameters().service_type)
-    }
-}
-
-impl RouteRequest<'_> {
-    pub fn service_type(mut self, service_types: models::ServiceTypes) -> Self {
-        self.parameters.service_type = service_types.to_type().to_string();
-        self
-    }
-}
-
-create_endpoint!(RouteRequestById);
-
-impl RequestBuilder for RouteRequestById<'_> {
-    type Response = models::Lines;
-
-    fn get_client(&self) ->  &Client {
-        self.client
-    }
-
-    fn get_parameters(&self) -> &models::Parameters {
-        &self.parameters
-    }
-
-    fn get_request_url(&self) -> String {
-        format!("/Line/{}/Route?{}", self.get_parameters().line_id, self.get_parameters().service_type)
-    }
-}
-
-impl RouteRequestById<'_> {
-    // filter by line id
-    pub fn line(mut self, line: models::LineID) -> Self {
-        self.parameters.line_id = line.line().to_string();
-        self
-    }
-
-    pub fn service_type(mut self, service_types: models::ServiceTypes) -> Self {
-        self.parameters.service_type = service_types.to_type().to_string();
-        self
-    }
-}
-
