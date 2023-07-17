@@ -1,7 +1,7 @@
 # TFL API Wrapper
 
 A rust crate for using the [Transport for London (TFL) API](https://api.tfl.gov.uk).
-[Cargo.toml](Cargo.toml)
+
 *Note: This is currently WIP and not ready for use.*
 
 ## Installation
@@ -11,9 +11,6 @@ Using `cargo`, add this to your project's `Cargo.toml`:
 [dependencies]
 tfl-api-wrapper = "0.1.2"
 ```
-
-## Implemented APIs
-Currently only the version for the API is implemented.
 
 ## Usage
 
@@ -50,6 +47,16 @@ You can run the tests by running:
 ```sh
 APP_KEY=hjdhajsdas cargo test
 ```
+## Implemented APIs
+- Version
+- Line
+    - Get all valid routes for all lines, including the name and id of the originating and terminating stops for each route.
+    - Get all valid routes for given line ids, including the name and id of the originating and terminating stops for each route.
+    - Get disruptions for all lines of the given modes.
+    - Get disruptions for the given line ids.
+
+## Limitations
+- Currently fetching of disruptions and routes is supported for single line only. Support for specifying multiple lines will be added in the future.
 
 ## References/Credits
 1. Existing tfl wrappers

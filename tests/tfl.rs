@@ -10,7 +10,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn it_is_version_1() {
+    async fn it_is_expected_version() {
         let client = get_client();
         let ver = client.api_version().fetch().await.unwrap();
         println!("aaa {:?}", ver);
@@ -26,16 +26,11 @@ mod tests {
             .fetch()
             .await
             .unwrap();
-        for trains in routes.clone() {
-            if trains.mode_name == "tube" {
-                println!("{}", trains.name)
-            }
-        }
         assert!(!routes.is_empty());
     }
 
     #[tokio::test]
-    async fn it_fetches_routes_by_id() {
+    async fn it_fetches_routes_by_line() {
         let client = get_client();
 
         let route = client
@@ -54,6 +49,23 @@ mod tests {
         let disruptions = client
             .disruptions_by_mode()
             .mode(models::Mode::Bus)
+            .fetch()
+            .await
+            .unwrap();
+        if disruptions.len() == 0 {
+            assert!(disruptions.is_empty());
+        } else {
+            assert!(!disruptions.is_empty());
+        }
+    }
+
+    #[tokio::test]
+    async fn it_fetches_disruptions_by_line() {
+        let client = get_client();
+
+        let disruptions = client
+            .disruptions_by_line()
+            .line(models::LineID::Bakerloo)
             .fetch()
             .await
             .unwrap();

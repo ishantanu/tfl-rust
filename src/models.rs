@@ -183,7 +183,7 @@ impl LineID {
 #[derive(Debug, Default, Serialize)]
 pub struct Parameters {
     #[serde(flatten)]
-    pub line_id: String,
+    pub line: String,
     pub service_type: String,
     pub mode: String,
 }

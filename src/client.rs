@@ -1,5 +1,5 @@
 use crate::{
-    line::{DisruptionByMode, RouteRequest, RouteRequestById},
+    line::{DisruptionByLine, DisruptionByMode, RouteRequest, RouteRequestById},
     request::*,
 };
 
@@ -38,5 +38,9 @@ impl Client {
 
     pub fn disruptions_by_mode(&self) -> DisruptionByMode<'_> {
         DisruptionByMode::new(self)
+    }
+
+    pub fn disruptions_by_line(&self) -> DisruptionByLine<'_> {
+        DisruptionByLine::new(self)
     }
 }
