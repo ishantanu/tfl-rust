@@ -1,5 +1,8 @@
 use crate::{
-    line::{DisruptionByLine, DisruptionByMode, RouteRequest, RouteRequestById},
+    line::{
+        ArrivalPredictionsByLine, DisruptionByLine, DisruptionByMode, RouteRequest,
+        RouteRequestById,
+    },
     request::*,
 };
 
@@ -19,28 +22,33 @@ impl Client {
         }
     }
 
+    /// Return API version
     pub fn api_version(&self) -> VersionRequest<'_> {
         VersionRequest::new(self)
     }
 
-    // APIs relating to Line and similar services
-    // pub fn line(&self) -> LineRequest {
-    //    LineRequest::new(Self)
-    //}
-
+    /// Return all the TFL routes
     pub fn routes(&self) -> RouteRequest<'_> {
         RouteRequest::new(self)
     }
 
-    pub fn routes_by_id(&self) -> RouteRequestById<'_> {
+    /// Return routes by Line(s)
+    pub fn routes_by_line(&self) -> RouteRequestById<'_> {
         RouteRequestById::new(self)
     }
 
+    /// Return disruptions by service mode. For example: Regular, Night
     pub fn disruptions_by_mode(&self) -> DisruptionByMode<'_> {
         DisruptionByMode::new(self)
     }
 
+    /// Return disruptions by specified Line(s)
     pub fn disruptions_by_line(&self) -> DisruptionByLine<'_> {
         DisruptionByLine::new(self)
+    }
+
+    /// Return arrival predictions by specified Line(s)
+    pub fn arrival_predictions_by_line(&self) -> ArrivalPredictionsByLine<'_> {
+        ArrivalPredictionsByLine::new(self)
     }
 }

@@ -3,6 +3,7 @@ use serde_json::Value;
 
 pub type Line = Vec<Lines>;
 pub type Disruption = Vec<Disruptions>;
+pub type Arrival = Vec<Arrivals>;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ApiException {
@@ -118,6 +119,46 @@ pub struct Disruptions {
     pub affected_stops: Vec<Value>,
 }
 
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Arrivals {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub id: String,
+    pub operation_type: i64,
+    pub vehicle_id: String,
+    pub naptan_id: String,
+    pub station_name: String,
+    pub line_id: String,
+    pub line_name: String,
+    pub platform_name: String,
+    pub direction: Option<String>,
+    pub bearing: String,
+    pub destination_naptan_id: String,
+    pub destination_name: String,
+    pub timestamp: String,
+    pub time_to_station: i64,
+    pub current_location: String,
+    pub towards: String,
+    pub expected_arrival: String,
+    pub time_to_live: String,
+    pub mode_name: String,
+    pub timing: Timing,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Timing {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub countdown_server_adjustment: String,
+    pub source: String,
+    pub insert: String,
+    pub read: String,
+    pub sent: String,
+    pub received: String,
+}
+
 pub enum ServiceTypes {
     Regular,
     Night,
@@ -184,6 +225,7 @@ impl LineID {
 pub struct Parameters {
     #[serde(flatten)]
     pub line: String,
+    pub line1: String,
     pub service_type: String,
     pub mode: String,
 }

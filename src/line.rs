@@ -48,9 +48,19 @@ impl RequestBuilder for RouteRequestById<'_> {
 }
 
 impl RouteRequestById<'_> {
-    // filter by line id
-    pub fn line(mut self, line: models::LineID) -> Self {
-        self.parameters.line = line.line().to_string();
+    // filter by line ids
+    pub fn line(mut self, line: Vec<models::LineID>) -> Self {
+        let mut lines: String = "".to_owned();
+        for k in line {
+            //k.line().to_string();
+            if lines == "" {
+                lines.push_str(k.line().into());
+            } else {
+                lines.push_str(",");
+                lines.push_str(k.line().into());
+            }
+        }
+        self.parameters.line = lines;
         self
     }
 
@@ -80,8 +90,18 @@ impl RequestBuilder for DisruptionByMode<'_> {
 
 impl DisruptionByMode<'_> {
     // Get disruption for all lines by mode
-    pub fn mode(mut self, modes: models::Mode) -> Self {
-        self.parameters.mode = modes.mode().to_string();
+    pub fn mode(mut self, mode: Vec<models::Mode>) -> Self {
+        let mut modes: String = "".to_owned();
+        for k in mode {
+            //k.line().to_string();
+            if modes == "" {
+                modes.push_str(k.mode().into());
+            } else {
+                modes.push_str(",");
+                modes.push_str(k.mode().into());
+            }
+        }
+        self.parameters.line = modes;
         self
     }
 }
@@ -100,18 +120,60 @@ impl RequestBuilder for DisruptionByLine<'_> {
     }
 
     fn get_request_url(&self) -> String {
-        println!(
-            "{}",
-            format!("Line/{}/Disruption", self.get_parameters().line)
-        );
         format!("/Line/{}/Disruption", self.get_parameters().line)
     }
 }
 
 impl DisruptionByLine<'_> {
     // filter by line
-    pub fn line(mut self, line: models::LineID) -> Self {
-        self.parameters.line = line.line().to_string();
+    pub fn line(mut self, line: Vec<models::LineID>) -> Self {
+        let mut lines: String = "".to_owned();
+        for k in line {
+            //k.line().to_string();
+            if lines == "" {
+                lines.push_str(k.line().into());
+            } else {
+                lines.push_str(",");
+                lines.push_str(k.line().into());
+            }
+        }
+        self.parameters.line = lines;
+        self
+    }
+}
+
+create_endpoint!(ArrivalPredictionsByLine);
+
+impl RequestBuilder for ArrivalPredictionsByLine<'_> {
+    type Response = models::Arrival;
+
+    fn get_client(&self) -> &Client {
+        self.client
+    }
+
+    fn get_parameters(&self) -> &models::Parameters {
+        &self.parameters
+    }
+
+    fn get_request_url(&self) -> String {
+        format!("/Line/{}/Arrivals", self.get_parameters().line)
+    }
+}
+
+impl ArrivalPredictionsByLine<'_> {
+    // filter by line
+    pub fn line(mut self, line: Vec<models::LineID>) -> Self {
+        let mut lines: String = "".to_owned();
+        for k in line {
+            //k.line().to_string();
+            if lines == "" {
+                lines.push_str(k.line().into());
+            } else {
+                lines.push_str(",");
+                lines.push_str(k.line().into());
+            }
+        }
+        self.parameters.line = lines;
         self
     }
 }

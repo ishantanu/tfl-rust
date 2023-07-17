@@ -33,12 +33,8 @@ mod tests {
     async fn it_fetches_routes_by_line() {
         let client = get_client();
 
-        let route = client
-            .routes_by_id()
-            .line(models::LineID::Bakerloo)
-            .fetch()
-            .await
-            .unwrap();
+        let lines: Vec<models::LineID> = vec![models::LineID::Bakerloo];
+        let route = client.routes_by_line().line(lines).fetch().await.unwrap();
         assert_eq!(route.name, "Bakerloo");
     }
 
@@ -46,9 +42,10 @@ mod tests {
     async fn it_fetches_disruptions_by_mode() {
         let client = get_client();
 
+        let modes: Vec<models::Mode> = vec![models::Mode::Bus];
         let disruptions = client
             .disruptions_by_mode()
-            .mode(models::Mode::Bus)
+            .mode(modes)
             .fetch()
             .await
             .unwrap();
@@ -62,10 +59,29 @@ mod tests {
     #[tokio::test]
     async fn it_fetches_disruptions_by_line() {
         let client = get_client();
+        let lines: Vec<models::LineID> = vec![models::LineID::Bakerloo, models::LineID::Jubilee];
 
         let disruptions = client
             .disruptions_by_line()
-            .line(models::LineID::Bakerloo)
+            .line(lines)
+            .fetch()
+            .await
+            .unwrap();
+        if disruptions.len() == 0 {
+            assert!(disruptions.is_empty());
+        } else {
+            assert!(!disruptions.is_empty());
+        }
+    }
+
+    #[tokio::test]
+    async fn it_fetches_arrivals_by_line() {
+        let client = get_client();
+        let lines: Vec<models::LineID> = vec![models::LineID::Bakerloo, models::LineID::Jubilee];
+
+        let disruptions = client
+            .arrival_predictions_by_line()
+            .line(lines)
             .fetch()
             .await
             .unwrap();

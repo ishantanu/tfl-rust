@@ -55,9 +55,6 @@ APP_KEY=hjdhajsdas cargo test
     - Get disruptions for all lines of the given modes.
     - Get disruptions for the given line ids.
 
-## Limitations
-- Currently fetching of disruptions and routes is supported for single line only. Support for specifying multiple lines will be added in the future.
-
 ## References/Credits
 1. Existing tfl wrappers
    1. [tfl-api-wrapper](https://github.com/ZackaryH8/tfl-api-wrapper) - NodeJS wrapper for TFL API, made with TypeScript.
