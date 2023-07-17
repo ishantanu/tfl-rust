@@ -42,18 +42,36 @@ async fn it_is_version_1() {
 }
 ```
 
+Get arrival predictions by lines
+```rust
+async fn get_arrivals_by_lines() {
+    use tfl_api_wrapper::{Client, RequestBuilder, models};
+    use std::env;
+
+    let client = Client::new(env::var("APP_KEY").unwrap().into());
+    let lines: Vec<models::LineID> = vec![models::LineID::Bakerloo, models::LineID::Jubilee];
+    let arrivals = client
+        .arrival_predictions_by_line()
+        .line(lines)
+        .fetch()
+        .await
+        .unwrap();
+}
+```
+
 ## Tests
 You can run the tests by running:
 ```sh
 APP_KEY=hjdhajsdas cargo test
 ```
 ## Implemented APIs
-- Version
+- Version - Shows the API version
 - Line
     - Get all valid routes for all lines, including the name and id of the originating and terminating stops for each route.
     - Get all valid routes for given line ids, including the name and id of the originating and terminating stops for each route.
     - Get disruptions for all lines of the given modes.
     - Get disruptions for the given line ids.
+    - Get the list of arrival predictions for given line ids based at the given stop
 
 ## References/Credits
 1. Existing tfl wrappers

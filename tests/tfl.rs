@@ -79,16 +79,16 @@ mod tests {
         let client = get_client();
         let lines: Vec<models::LineID> = vec![models::LineID::Bakerloo, models::LineID::Jubilee];
 
-        let disruptions = client
+        let arrivals = client
             .arrival_predictions_by_line()
             .line(lines)
             .fetch()
             .await
             .unwrap();
-        if disruptions.len() == 0 {
-            assert!(disruptions.is_empty());
+        if arrivals.len() == 0 {
+            assert!(arrivals.is_empty());
         } else {
-            assert!(!disruptions.is_empty());
+            assert!(!arrivals.is_empty());
         }
     }
 }
