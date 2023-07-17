@@ -42,7 +42,7 @@ mod tests {
     async fn it_fetches_disruptions_by_mode() {
         let client = get_client();
 
-        let modes: Vec<models::Mode> = vec![models::Mode::Bus];
+        let modes: Vec<models::Mode> = vec![models::Mode::Bus, models::Mode::Tube];
         let disruptions = client
             .disruptions_by_mode()
             .mode(modes)

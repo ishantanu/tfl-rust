@@ -101,7 +101,7 @@ impl DisruptionByMode<'_> {
                 modes.push_str(k.mode().into());
             }
         }
-        self.parameters.line = modes;
+        self.parameters.mode = modes;
         self
     }
 }

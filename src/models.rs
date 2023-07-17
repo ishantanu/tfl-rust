@@ -225,7 +225,6 @@ impl LineID {
 pub struct Parameters {
     #[serde(flatten)]
     pub line: String,
-    pub line1: String,
     pub service_type: String,
     pub mode: String,
 }
