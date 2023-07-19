@@ -75,12 +75,12 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn it_fetches_arrivals_by_line() {
+    async fn it_predicts_arrivals_by_line() {
         let client = get_client();
         let lines: Vec<models::LineID> = vec![models::LineID::Bakerloo, models::LineID::Jubilee];
 
         let arrivals = client
-            .arrival_predictions_by_line()
+            .arrival_predictions_by_lines()
             .line(lines)
             .fetch()
             .await
@@ -90,5 +90,53 @@ mod tests {
         } else {
             assert!(!arrivals.is_empty());
         }
+    }
+
+    #[tokio::test]
+    async fn it_predicts_arrivals_by_line_with_stoppoint_id() {
+        let client = get_client();
+        let lines: Vec<models::LineID> = vec![models::LineID::Bakerloo];
+        let predicted_arrivals = client
+            .arrival_predictions_by_lines_with_stoppoint()
+            .line(lines)
+            .stop_point("940GZZLUPAH")
+            .direction(models::Directions::Inbound)
+            .fetch()
+            .await
+            .unwrap();
+        println!("{:?}", predicted_arrivals);
+        if predicted_arrivals.len() == 0 {
+            assert!(predicted_arrivals.is_empty());
+        } else {
+            assert!(!predicted_arrivals.is_empty())
+        }
+    }
+
+    #[tokio::test]
+    async fn it_lists_stations_by_lines() {
+        let client = get_client();
+        let lines: Vec<models::LineID> = vec![models::LineID::Bakerloo];
+        let stations = client
+            .list_stations_by_lines()
+            .line(lines)
+            .fetch()
+            .await
+            .unwrap();
+        println!("{:?}", stations);
+        assert!(!stations.is_empty())
+    }
+
+    #[tokio::test]
+    async fn it_lists_disruption_categories() {
+        let client = get_client();
+        let disruption_categories = client.list_disruption_categories().fetch().await.unwrap();
+        assert!(!disruption_categories.is_empty())
+    }
+
+    #[tokio::test]
+    async fn it_lists_valid_modes() {
+        let client = get_client();
+        let valid_modes = client.list_modes().fetch().await.unwrap();
+        assert!(!valid_modes.is_empty())
     }
 }

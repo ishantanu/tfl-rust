@@ -4,6 +4,9 @@ use serde_json::Value;
 pub type Line = Vec<Lines>;
 pub type Disruption = Vec<Disruptions>;
 pub type Arrival = Vec<Arrivals>;
+pub type StopPoint = Vec<StopPoints>;
+pub type DisruptionCategories = Vec<String>;
+pub type Modes = Vec<ValidMode>;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ApiException {
@@ -15,6 +18,17 @@ pub struct ApiException {
     pub display: String,
 }
 
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ValidMode {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub is_tfl_service: bool,
+    pub is_fare_paying: bool,
+    pub is_scheduled_service: bool,
+    pub mode_name: String,
+}
+
 // Returned by TFl version endpoint
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Version {
@@ -24,6 +38,99 @@ pub struct Version {
     pub timestamp: String,
     /// Current TFL API version
     pub version: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct StopPoints {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub naptan_id: String,
+    pub modes: Vec<String>,
+    pub ics_code: String,
+    pub stop_type: String,
+    pub station_naptan: String,
+    pub lines: Vec<StopPointLine>,
+    pub line_group: Vec<LineGroup>,
+    pub line_mode_groups: Vec<LineModeGroup>,
+    pub status: bool,
+    pub id: String,
+    pub common_name: String,
+    pub place_type: String,
+    pub additional_properties: Vec<AdditionalProperty>,
+    pub children: Vec<Children>,
+    pub lat: f64,
+    pub lon: f64,
+    pub hub_naptan_code: Option<String>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct StopPointLine {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub id: String,
+    pub name: String,
+    pub uri: String,
+    #[serde(rename = "type")]
+    pub type_field2: String,
+    pub crowding: Crowding,
+    pub route_type: String,
+    pub status: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LineGroup {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub naptan_id_reference: Option<String>,
+    pub station_atco_code: String,
+    pub line_identifier: Vec<String>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LineModeGroup {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub mode_name: String,
+    pub line_identifier: Vec<String>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AdditionalProperty {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub category: String,
+    pub key: String,
+    pub source_system_key: String,
+    pub value: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Children {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub naptan_id: String,
+    pub modes: Vec<Value>,
+    pub ics_code: String,
+    pub station_naptan: String,
+    pub lines: Vec<Value>,
+    pub line_group: Vec<Value>,
+    pub line_mode_groups: Vec<Value>,
+    pub status: bool,
+    pub id: String,
+    pub common_name: String,
+    pub place_type: String,
+    pub additional_properties: Vec<Value>,
+    pub children: Vec<Value>,
+    pub lat: f64,
+    pub lon: f64,
+    pub hub_naptan_code: Option<String>,
+    pub indicator: Option<String>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -173,6 +280,22 @@ impl ServiceTypes {
     }
 }
 
+pub enum Directions {
+    Inbound,
+    Outbound,
+    All,
+}
+
+impl Directions {
+    pub fn to_type(&self) -> &'static str {
+        match self {
+            Directions::Inbound => "Inboud",
+            Directions::Outbound => "Outbound",
+            Directions::All => "All",
+        }
+    }
+}
+
 pub enum Mode {
     Tube,
     DLR,
@@ -224,7 +347,11 @@ impl LineID {
 #[derive(Debug, Default, Serialize)]
 pub struct Parameters {
     #[serde(flatten)]
-    pub line: String,
+    pub lines: String,
     pub service_type: String,
     pub mode: String,
+    pub stop_point_id: String,
+    pub direction: Option<String>,
+    pub destination_station_id: Option<String>,
+    pub tfl_operated_national_rail_stations_only: Option<bool>,
 }

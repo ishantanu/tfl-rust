@@ -1,6 +1,7 @@
 use crate::{
     line::{
-        ArrivalPredictionsByLine, DisruptionByLine, DisruptionByMode, RouteRequest,
+        ArrivalPredictionsByLines, ArrivalPredictionsByLinesStopPointID, DisruptionByLines,
+        DisruptionByMode, ListDisruptionCategories, ListModes, ListStationsByLines, RouteRequest,
         RouteRequestById,
     },
     request::*,
@@ -43,12 +44,34 @@ impl Client {
     }
 
     /// Return disruptions by specified Line(s)
-    pub fn disruptions_by_line(&self) -> DisruptionByLine<'_> {
-        DisruptionByLine::new(self)
+    pub fn disruptions_by_line(&self) -> DisruptionByLines<'_> {
+        DisruptionByLines::new(self)
     }
 
     /// Return arrival predictions by specified Line(s)
-    pub fn arrival_predictions_by_line(&self) -> ArrivalPredictionsByLine<'_> {
-        ArrivalPredictionsByLine::new(self)
+    pub fn arrival_predictions_by_lines(&self) -> ArrivalPredictionsByLines<'_> {
+        ArrivalPredictionsByLines::new(self)
+    }
+
+    /// Return arrival predictions by lines with stop point ID and optionally specifying direction, destination station id
+    pub fn arrival_predictions_by_lines_with_stoppoint(
+        &self,
+    ) -> ArrivalPredictionsByLinesStopPointID<'_> {
+        ArrivalPredictionsByLinesStopPointID::new(self)
+    }
+
+    /// Get a list of station that serve give lines
+    pub fn list_stations_by_lines(&self) -> ListStationsByLines<'_> {
+        ListStationsByLines::new(self)
+    }
+
+    /// Gets a list of valid disruption categories
+    pub fn list_disruption_categories(&self) -> ListDisruptionCategories<'_> {
+        ListDisruptionCategories::new(self)
+    }
+
+    /// Gets a list of valid modes
+    pub fn list_modes(&self) -> ListModes<'_> {
+        ListModes::new(self)
     }
 }

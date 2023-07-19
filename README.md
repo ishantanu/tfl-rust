@@ -51,7 +51,7 @@ async fn get_arrivals_by_lines() {
     let client = Client::new(env::var("APP_KEY").unwrap().into());
     let lines: Vec<models::LineID> = vec![models::LineID::Bakerloo, models::LineID::Jubilee];
     let arrivals = client
-        .arrival_predictions_by_line()
+        .arrival_predictions_by_lines()
         .line(lines)
         .fetch()
         .await
@@ -72,6 +72,10 @@ APP_KEY=hjdhajsdas cargo test
     - Get disruptions for all lines of the given modes.
     - Get disruptions for the given line ids.
     - Get the list of arrival predictions for given line ids based at the given stop
+    - Gets a list of the stations that serve the given line id
+    - Gets a list of valid disruption categories
+    - Gets a list of valid modes
+
 
 ## References/Credits
 1. Existing tfl wrappers
