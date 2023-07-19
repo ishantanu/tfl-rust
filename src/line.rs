@@ -345,3 +345,21 @@ impl RequestBuilder for ListModes<'_> {
         self.client
     }
 }
+
+create_endpoint!(ListServiceTypes);
+
+impl RequestBuilder for ListServiceTypes<'_> {
+    type Response = models::LServiceTypes;
+
+    fn get_request_url(&self) -> String {
+        "/Line/Meta/ServiceTypes".into()
+    }
+
+    fn get_parameters(&self) -> &models::Parameters {
+        &self.parameters
+    }
+
+    fn get_client(&self) -> &Client {
+        self.client
+    }
+}

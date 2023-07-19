@@ -139,4 +139,11 @@ mod tests {
         let valid_modes = client.list_modes().fetch().await.unwrap();
         assert!(!valid_modes.is_empty())
     }
+
+    #[tokio::test]
+    async fn it_lists_service_types() {
+        let client = get_client();
+        let service_types = client.list_service_types().fetch().await.unwrap();
+        assert!(!service_types.is_empty())
+    }
 }

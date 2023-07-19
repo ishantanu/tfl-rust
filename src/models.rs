@@ -7,6 +7,7 @@ pub type Arrival = Vec<Arrivals>;
 pub type StopPoint = Vec<StopPoints>;
 pub type DisruptionCategories = Vec<String>;
 pub type Modes = Vec<ValidMode>;
+pub type LServiceTypes = Vec<String>;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ApiException {
@@ -266,6 +267,7 @@ pub struct Timing {
     pub received: String,
 }
 
+#[derive(Debug)]
 pub enum ServiceTypes {
     Regular,
     Night,

@@ -1,8 +1,8 @@
 use crate::{
     line::{
         ArrivalPredictionsByLines, ArrivalPredictionsByLinesStopPointID, DisruptionByLines,
-        DisruptionByMode, ListDisruptionCategories, ListModes, ListStationsByLines, RouteRequest,
-        RouteRequestById,
+        DisruptionByMode, ListDisruptionCategories, ListModes, ListServiceTypes,
+        ListStationsByLines, RouteRequest, RouteRequestById,
     },
     request::*,
 };
@@ -73,5 +73,10 @@ impl Client {
     /// Gets a list of valid modes
     pub fn list_modes(&self) -> ListModes<'_> {
         ListModes::new(self)
+    }
+
+    /// Gets a list of valid ServiceTypes to filter on
+    pub fn list_service_types(&self) -> ListServiceTypes<'_> {
+        ListServiceTypes::new(self)
     }
 }

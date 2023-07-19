@@ -75,6 +75,9 @@ APP_KEY=hjdhajsdas cargo test
     - Gets a list of the stations that serve the given line id
     - Gets a list of valid disruption categories
     - Gets a list of valid modes
+    - Gets a list of valid ServiceTypes to filter on
+
+
 
 
 ## References/Credits
