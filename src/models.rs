@@ -10,6 +10,7 @@ pub type Modes = Vec<ValidMode>;
 pub type LServiceTypes = Vec<String>;
 pub type Serverities = Vec<Severity>;
 pub type Route = Vec<Routes>;
+pub type LineSeverity = Vec<LineSeverities>;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ApiException {
@@ -19,6 +20,63 @@ pub struct ApiException {
     pub doc: String,
     /// TBD
     pub display: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LineSeverities {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub id: String,
+    pub name: String,
+    pub mode_name: String,
+    pub disruptions: Vec<Value>,
+    pub created: String,
+    pub modified: String,
+    pub line_statuses: Vec<LineStatuses>,
+    pub route_sections: Vec<Value>,
+    pub service_types: Vec<ServiceType>,
+    pub crowding: Crowding,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LineStatuses {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub id: i64,
+    pub line_id: String,
+    pub status_severity: i64,
+    pub status_severity_description: String,
+    pub reason: String,
+    pub created: String,
+    pub validity_periods: Vec<ValidityPeriod>,
+    pub disruption: SevDisruption,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ValidityPeriod {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub from_date: String,
+    pub to_date: String,
+    pub is_now: bool,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SevDisruption {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub category: String,
+    pub category_description: String,
+    pub description: String,
+    pub created: Option<String>,
+    pub affected_routes: Vec<Value>,
+    pub affected_stops: Vec<Value>,
+    pub additional_info: Option<String>,
+    pub closure_text: Option<String>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -547,6 +605,10 @@ pub enum Mode {
     Tube,
     DLR,
     Bus,
+    RiverBus,
+    NationalRail,
+    Tram,
+    ElizabethLine,
 }
 
 impl Mode {
@@ -555,38 +617,10 @@ impl Mode {
             Mode::Tube => "Tube",
             Mode::DLR => "DLR",
             Mode::Bus => "Bus",
-        }
-    }
-}
-
-pub enum LineID {
-    Bakerloo,
-    Central,
-    Circle,
-    District,
-    HammersmithAndCity,
-    Jubilee,
-    Metropolitan,
-    Northern,
-    Piccadilly,
-    Victoria,
-    WaterlooAndCity,
-}
-
-impl LineID {
-    pub fn line(&self) -> &'static str {
-        match self {
-            LineID::Bakerloo => "Bakerloo",
-            LineID::Central => "Central",
-            LineID::Circle => "Circle",
-            LineID::District => "District",
-            LineID::Jubilee => "Jubilee",
-            LineID::Metropolitan => "Metropolitan",
-            LineID::Northern => "Northern",
-            LineID::Piccadilly => "Piccadilly",
-            LineID::Victoria => "Victoria",
-            LineID::HammersmithAndCity => "Hammersmith & City",
-            LineID::WaterlooAndCity => "Waterloo & City",
+            Mode::RiverBus => "river-bus",
+            Mode::NationalRail => "national-rail",
+            Mode::Tram => "Tram",
+            Mode::ElizabethLine => "elizabeth-line",
         }
     }
 }
@@ -597,10 +631,11 @@ pub struct Parameters {
     pub lines: String,
     pub line_id: String,
     pub service_type: Option<String>,
-    pub mode: String,
+    pub modes: String,
     pub stop_point_id: String,
     pub direction: Option<String>,
     pub destination_station_id: Option<String>,
     pub tfl_operated_national_rail_stations_only: Option<bool>,
     pub exclude_crowding: Option<bool>,
+    pub severity: i8,
 }

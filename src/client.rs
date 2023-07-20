@@ -1,9 +1,9 @@
 use crate::{
     line::{
         ArrivalPredictionsByLines, ArrivalPredictionsByLinesStopPointID, DisruptionByLines,
-        DisruptionByMode, ListDisruptionCategories, ListLinesRoutesByModes, ListModes,
-        ListRoutesForLineIDWithSequence, ListServiceTypes, ListSeverityTypes, ListStationsByLines,
-        RouteRequest, RouteRequestById,
+        DisruptionByMode, LineStatusBySeverity, ListDisruptionCategories, ListLinesByID,
+        ListLinesByModes, ListLinesRoutesByModes, ListModes, ListRoutesForLineIDWithSequence,
+        ListServiceTypes, ListSeverityTypes, ListStationsByLines, RouteRequest, RouteRequestById,
     },
     request::*,
 };
@@ -94,5 +94,20 @@ impl Client {
     /// Gets all valid routes for given line id, including the sequence of stops on each route.
     pub fn list_routes_by_line_with_sequence(&self) -> ListRoutesForLineIDWithSequence<'_> {
         ListRoutesForLineIDWithSequence::new(self)
+    }
+
+    /// Gets lines that match the specified line ids.
+    pub fn list_lines_by_id(&self) -> ListLinesByID<'_> {
+        ListLinesByID::new(self)
+    }
+
+    /// Gets lines that serve the given modes.
+    pub fn list_lines_by_modes(&self) -> ListLinesByModes<'_> {
+        ListLinesByModes::new(self)
+    }
+
+    /// Gets the line status for all lines with a given severity
+    pub fn line_status_by_severity(&self) -> LineStatusBySeverity<'_> {
+        LineStatusBySeverity::new(self)
     }
 }

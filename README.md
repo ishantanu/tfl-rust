@@ -64,6 +64,7 @@ You can run the tests by running:
 ```sh
 APP_KEY=hjdhajsdas cargo test
 ```
+
 ## Implemented APIs
 - Version - Shows the API version
 - Line
@@ -79,7 +80,12 @@ APP_KEY=hjdhajsdas cargo test
     - Gets a list of valid severity codes
     - Gets all lines and their valid routes for given modes, including the name and id of the originating and terminating stops for each route
     - Gets all valid routes for given line id, including the sequence of stops on each route.
+    - Gets lines that match the specified line ids
+    - Gets lines that serve the given modes.
+    - Gets the line status for all lines with a given severity
 
+## Limitations
+- Currently, the enum types created for Lines does not contain buses starting with numeric characters (e.g. 101).
 
 ## References/Credits
 1. Existing tfl wrappers

@@ -1,4 +1,5 @@
 use crate::{
+    linemodels::{self},
     models::{self},
     request::create_endpoint,
     Client, RequestBuilder,
@@ -53,7 +54,7 @@ impl RequestBuilder for RouteRequestById<'_> {
 
 impl RouteRequestById<'_> {
     // filter by line ids
-    pub fn line(mut self, line: Vec<models::LineID>) -> Self {
+    pub fn line(mut self, line: Vec<linemodels::LineID>) -> Self {
         let mut lines: String = "".to_owned();
         for k in line {
             //k.line().to_string();
@@ -88,7 +89,7 @@ impl RequestBuilder for DisruptionByMode<'_> {
     }
 
     fn get_request_url(&self) -> String {
-        format!("/Line/Mode/{}/Disruption", self.get_parameters().mode)
+        format!("/Line/Mode/{}/Disruption", self.get_parameters().modes)
     }
 }
 
@@ -105,7 +106,7 @@ impl DisruptionByMode<'_> {
                 modes.push_str(k.mode().into());
             }
         }
-        self.parameters.mode = modes;
+        self.parameters.modes = modes;
         self
     }
 }
@@ -130,7 +131,7 @@ impl RequestBuilder for DisruptionByLines<'_> {
 
 impl DisruptionByLines<'_> {
     // filter by line
-    pub fn line(mut self, line: Vec<models::LineID>) -> Self {
+    pub fn line(mut self, line: Vec<linemodels::LineID>) -> Self {
         let mut lines: String = "".to_owned();
         for k in line {
             //k.line().to_string();
@@ -166,7 +167,7 @@ impl RequestBuilder for ArrivalPredictionsByLines<'_> {
 
 impl ArrivalPredictionsByLines<'_> {
     // filter by line
-    pub fn line(mut self, line: Vec<models::LineID>) -> Self {
+    pub fn line(mut self, line: Vec<linemodels::LineID>) -> Self {
         let mut lines: String = "".to_owned();
         for k in line {
             //k.line().to_string();
@@ -234,7 +235,7 @@ impl RequestBuilder for ArrivalPredictionsByLinesStopPointID<'_> {
 
 impl ArrivalPredictionsByLinesStopPointID<'_> {
     // filter by line
-    pub fn line(mut self, line: Vec<models::LineID>) -> Self {
+    pub fn line(mut self, line: Vec<linemodels::LineID>) -> Self {
         let mut lines: String = "".to_owned();
         for k in line {
             //k.line().to_string();
@@ -285,7 +286,7 @@ impl RequestBuilder for ListStationsByLines<'_> {
 
 impl ListStationsByLines<'_> {
     // filter by line
-    pub fn line(mut self, line: Vec<models::LineID>) -> Self {
+    pub fn line(mut self, line: Vec<linemodels::LineID>) -> Self {
         let mut lines: String = "".to_owned();
         for k in line {
             //k.line().to_string();
@@ -390,7 +391,7 @@ impl RequestBuilder for ListLinesRoutesByModes<'_> {
     fn get_request_url(&self) -> String {
         format!(
             "/Line/Mode/{}/Route?{:?}",
-            self.get_parameters().mode,
+            self.get_parameters().modes,
             self.get_parameters().service_type
         )
     }
@@ -417,7 +418,7 @@ impl ListLinesRoutesByModes<'_> {
                 modes.push_str(k.mode().into());
             }
         }
-        self.parameters.mode = modes;
+        self.parameters.modes = modes;
         self
     }
 
@@ -494,7 +495,7 @@ impl RequestBuilder for ListRoutesForLineIDWithSequence<'_> {
 
 impl ListRoutesForLineIDWithSequence<'_> {
     // Get line id
-    pub fn line(mut self, id: models::LineID) -> Self {
+    pub fn line(mut self, id: linemodels::LineID) -> Self {
         self.parameters.line_id = id.line().to_string();
         self
     }
@@ -511,6 +512,104 @@ impl ListRoutesForLineIDWithSequence<'_> {
     /// direction of line
     pub fn direction(mut self, direction: models::Directions) -> Self {
         self.parameters.direction = Some(direction.to_type().to_string());
+        self
+    }
+}
+
+create_endpoint!(ListLinesByID);
+
+impl RequestBuilder for ListLinesByID<'_> {
+    type Response = models::Line;
+
+    fn get_request_url(&self) -> String {
+        format!("/Line/{}", self.get_parameters().lines)
+    }
+
+    fn get_parameters(&self) -> &models::Parameters {
+        &self.parameters
+    }
+
+    fn get_client(&self) -> &Client {
+        self.client
+    }
+}
+
+impl ListLinesByID<'_> {
+    // filter by line
+    pub fn line(mut self, line: Vec<linemodels::LineID>) -> Self {
+        let mut lines: String = "".to_owned();
+        for k in line {
+            //k.line().to_string();
+            if lines == "" {
+                lines.push_str(k.line().into());
+            } else {
+                lines.push_str(",");
+                lines.push_str(k.line().into());
+            }
+        }
+        self.parameters.lines = lines;
+        self
+    }
+}
+
+create_endpoint!(ListLinesByModes);
+
+impl RequestBuilder for ListLinesByModes<'_> {
+    type Response = models::Line;
+
+    fn get_request_url(&self) -> String {
+        format!("/Line/Mode/{}", self.get_parameters().modes)
+    }
+
+    fn get_parameters(&self) -> &models::Parameters {
+        &self.parameters
+    }
+
+    fn get_client(&self) -> &Client {
+        self.client
+    }
+}
+
+impl ListLinesByModes<'_> {
+    // Get disruption for all lines by mode
+    pub fn mode(mut self, mode: Vec<models::Mode>) -> Self {
+        let mut modes: String = "".to_owned();
+        for k in mode {
+            //k.line().to_string();
+            if modes == "" {
+                modes.push_str(k.mode().into());
+            } else {
+                modes.push_str(",");
+                modes.push_str(k.mode().into());
+            }
+        }
+        self.parameters.modes = modes;
+        self
+    }
+}
+
+create_endpoint!(LineStatusBySeverity);
+
+impl RequestBuilder for LineStatusBySeverity<'_> {
+    type Response = models::LineSeverity;
+
+    fn get_request_url(&self) -> String {
+        format!("/Line/Status/{}", self.get_parameters().severity)
+    }
+
+    fn get_parameters(&self) -> &models::Parameters {
+        &self.parameters
+    }
+
+    fn get_client(&self) -> &Client {
+        self.client
+    }
+}
+
+impl LineStatusBySeverity<'_> {
+    // Get disruption for all lines by mode
+    pub fn level(mut self, sev: i8) -> Self {
+        self.parameters.severity = sev;
         self
     }
 }

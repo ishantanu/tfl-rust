@@ -5,4 +5,5 @@ pub use self::request::RequestBuilder;
 pub mod client;
 pub mod line;
 pub mod models;
+pub mod linemodels;
 pub mod request;

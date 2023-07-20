@@ -3,7 +3,7 @@ mod tests {
     use std::env;
 
     use tfl_api_wrapper::models::{self};
-    use tfl_api_wrapper::{Client, RequestBuilder};
+    use tfl_api_wrapper::{linemodels, Client, RequestBuilder};
 
     fn get_client() -> Client {
         Client::new(env::var("APP_KEY").unwrap())
@@ -33,7 +33,7 @@ mod tests {
     async fn it_fetches_routes_by_line() {
         let client = get_client();
 
-        let lines: Vec<models::LineID> = vec![models::LineID::Bakerloo];
+        let lines: Vec<linemodels::LineID> = vec![linemodels::LineID::Bakerloo];
         let route = client.routes_by_line().line(lines).fetch().await.unwrap();
         assert_eq!(route.name, "Bakerloo");
     }
@@ -59,7 +59,8 @@ mod tests {
     #[tokio::test]
     async fn it_fetches_disruptions_by_line() {
         let client = get_client();
-        let lines: Vec<models::LineID> = vec![models::LineID::Bakerloo, models::LineID::Jubilee];
+        let lines: Vec<linemodels::LineID> =
+            vec![linemodels::LineID::Bakerloo, linemodels::LineID::Jubilee];
 
         let disruptions = client
             .disruptions_by_line()
@@ -77,7 +78,8 @@ mod tests {
     #[tokio::test]
     async fn it_predicts_arrivals_by_line() {
         let client = get_client();
-        let lines: Vec<models::LineID> = vec![models::LineID::Bakerloo, models::LineID::Jubilee];
+        let lines: Vec<linemodels::LineID> =
+            vec![linemodels::LineID::Bakerloo, linemodels::LineID::Jubilee];
 
         let arrivals = client
             .arrival_predictions_by_lines()
@@ -95,7 +97,7 @@ mod tests {
     #[tokio::test]
     async fn it_predicts_arrivals_by_line_with_stoppoint_id() {
         let client = get_client();
-        let lines: Vec<models::LineID> = vec![models::LineID::Bakerloo];
+        let lines: Vec<linemodels::LineID> = vec![linemodels::LineID::Bakerloo];
         let predicted_arrivals = client
             .arrival_predictions_by_lines_with_stoppoint()
             .line(lines)
@@ -115,7 +117,7 @@ mod tests {
     #[tokio::test]
     async fn it_lists_stations_by_lines() {
         let client = get_client();
-        let lines: Vec<models::LineID> = vec![models::LineID::Bakerloo];
+        let lines: Vec<linemodels::LineID> = vec![linemodels::LineID::Bakerloo];
         let stations = client
             .list_stations_by_lines()
             .line(lines)
@@ -172,7 +174,7 @@ mod tests {
         let client = get_client();
         let routes = client
             .list_routes_by_line_with_sequence()
-            .line(models::LineID::Victoria)
+            .line(linemodels::LineID::Victoria)
             .direction(models::Directions::Inbound)
             .service_type(models::ServiceTypes::Regular)
             .exclude_crowding(true)
@@ -180,5 +182,42 @@ mod tests {
             .await
             .unwrap();
         assert_eq!(routes.line_name, "Victoria")
+    }
+
+    #[tokio::test]
+    async fn it_lists_lines_by_id() {
+        let client = get_client();
+        let lines: Vec<linemodels::LineID> = vec![linemodels::LineID::Bakerloo];
+        let lines = client.list_lines_by_id().line(lines).fetch().await.unwrap();
+        assert!(!lines.is_empty())
+    }
+
+    #[tokio::test]
+    async fn it_lists_lines_by_modes() {
+        let client = get_client();
+        let modes: Vec<models::Mode> = vec![models::Mode::Tube, models::Mode::Bus];
+        let lines = client
+            .list_lines_by_modes()
+            .mode(modes)
+            .fetch()
+            .await
+            .unwrap();
+        assert!(!lines.is_empty())
+    }
+
+    #[tokio::test]
+    async fn it_fetches_line_status_by_severity() {
+        let client = get_client();
+        let line_statuses = client
+            .line_status_by_severity()
+            .level(0)
+            .fetch()
+            .await
+            .unwrap();
+        if line_statuses.len() == 0 {
+            assert!(line_statuses.is_empty())
+        } else {
+            assert!(!line_statuses.is_empty())
+        }
     }
 }
