@@ -218,13 +218,15 @@ pub struct Disruptions {
     /// Description
     pub description: String,
     /// Creation time for disruption
-    pub created: String,
+    pub created: Option<String>,
     /// Last update time for disruption
-    pub last_update: String,
+    pub last_update: Option<String>,
     /// Affected routes for disruption
     pub affected_routes: Vec<Value>,
     /// Affected stops for disruption
     pub affected_stops: Vec<Value>,
+    /// closure text
+    pub closure_text: Option<String>
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
