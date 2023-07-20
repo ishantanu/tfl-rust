@@ -9,6 +9,7 @@ pub type DisruptionCategories = Vec<String>;
 pub type Modes = Vec<ValidMode>;
 pub type LServiceTypes = Vec<String>;
 pub type Serverities = Vec<Severity>;
+pub type Route = Vec<Routes>;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ApiException {
@@ -18,6 +19,182 @@ pub struct ApiException {
     pub doc: String,
     /// TBD
     pub display: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Routes {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    /// Line ID
+    pub line_id: String,
+    /// Line name
+    pub line_name: String,
+    /// Line direction
+    pub direction: String,
+    /// Outbound only line
+    pub is_outbound_only: bool,
+    /// Mode
+    pub mode: String,
+    /// Line strings
+    pub line_strings: Vec<String>,
+    /// Stations on the line
+    pub stations: Vec<Station>,
+    /// Stop point sequences
+    pub stop_point_sequences: Vec<StopPointSequence>,
+    /// Ordered line routes
+    pub ordered_line_routes: Vec<OrderedLineRoute>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Station {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    /// Station ID
+    pub station_id: Option<String>,
+    /// ICS ID
+    pub ics_id: String,
+    /// Top most parent id
+    pub top_most_parent_id: Option<String>,
+    /// Modes
+    pub modes: Vec<String>,
+    /// Stop type
+    pub stop_type: String,
+    /// Station zone
+    pub zone: String,
+    /// Lines
+    pub lines: Vec<RouteLines>,
+    /// Status of the station
+    pub status: bool,
+    /// Station ID
+    pub id: String,
+    /// Station name
+    pub name: String,
+    /// Latitude
+    pub lat: f64,
+    /// Longitude
+    pub lon: f64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RouteLines {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    /// Line ID
+    pub id: String,
+    /// Line name
+    pub name: String,
+    /// URI
+    pub uri: String,
+    #[serde(rename = "type")]
+    pub type_field2: String,
+    /// Crowding stat
+    pub crowding: Crowding,
+    /// Route type
+    pub route_type: String,
+    /// Line status
+    pub status: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct StopPointSequence {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    /// Line ID
+    pub line_id: String,
+    /// Line name
+    pub line_name: String,
+    /// Traveling direction
+    pub direction: String,
+    /// Branch ID
+    pub branch_id: i64,
+    /// Subsequent branch IDs
+    pub next_branch_ids: Vec<Value>,
+    /// Previous branch IDs
+    pub prev_branch_ids: Vec<Value>,
+    /// Stop points
+    pub stop_point: Vec<RouteStopPoint>,
+    /// Service type
+    pub service_type: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RouteStopPoint {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    /// Parent ID
+    pub parent_id: Option<String>,
+    /// Station ID
+    pub station_id: String,
+    /// ICS ID
+    pub ics_id: String,
+    /// Top most parent ID
+    pub top_most_parent_id: String,
+    /// Modes
+    pub modes: Vec<String>,
+    /// Stop type
+    pub stop_type: String,
+    /// Zone
+    pub zone: String,
+    /// Lines
+    pub lines: Vec<Line2>,
+    /// Status
+    pub status: bool,
+    /// Stop point ID
+    pub id: String,
+    /// Stop point name
+    pub name: String,
+    /// Latitude
+    pub lat: f64,
+    /// Longitude
+    pub lon: f64,
+    /// Does it has a reported disruption
+    pub has_disruption: Option<bool>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Line2 {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    /// Line ID
+    pub id: String,
+    /// Line name
+    pub name: String,
+    /// Line URI
+    pub uri: String,
+    #[serde(rename = "type")]
+    pub type_field2: String,
+    /// Crowding
+    pub crowding: Crowding2,
+    /// Route type
+    pub route_type: String,
+    /// Line status
+    pub status: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Crowding2 {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct OrderedLineRoute {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    /// Ordered line route name
+    pub name: String,
+    /// NAPTAN IDs
+    pub naptan_ids: Vec<String>,
+    /// Service type
+    pub service_type: String,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -32,7 +209,6 @@ pub struct Severity {
     /// Severity description
     pub description: String,
 }
-
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -108,7 +284,7 @@ pub struct StopPointLine {
     pub type_field: String,
     /// Stop point line ID
     pub id: String,
-    /// Stop point line name 
+    /// Stop point line name
     pub name: String,
     /// URI
     pub uri: String,
@@ -294,7 +470,7 @@ pub struct Disruptions {
     /// Affected stops for disruption
     pub affected_stops: Vec<Value>,
     /// closure text
-    pub closure_text: Option<String>
+    pub closure_text: Option<String>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -351,7 +527,6 @@ impl ServiceTypes {
         }
     }
 }
-
 pub enum Directions {
     Inbound,
     Outbound,
@@ -361,7 +536,7 @@ pub enum Directions {
 impl Directions {
     pub fn to_type(&self) -> &'static str {
         match self {
-            Directions::Inbound => "Inboud",
+            Directions::Inbound => "Inbound",
             Directions::Outbound => "Outbound",
             Directions::All => "All",
         }
@@ -420,10 +595,12 @@ impl LineID {
 pub struct Parameters {
     #[serde(flatten)]
     pub lines: String,
-    pub service_type: String,
+    pub line_id: String,
+    pub service_type: Option<String>,
     pub mode: String,
     pub stop_point_id: String,
     pub direction: Option<String>,
     pub destination_station_id: Option<String>,
     pub tfl_operated_national_rail_stations_only: Option<bool>,
+    pub exclude_crowding: Option<bool>,
 }

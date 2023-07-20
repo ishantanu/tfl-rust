@@ -77,9 +77,8 @@ APP_KEY=hjdhajsdas cargo test
     - Gets a list of valid modes
     - Gets a list of valid ServiceTypes to filter on
     - Gets a list of valid severity codes
-
-
-
+    - Gets all lines and their valid routes for given modes, including the name and id of the originating and terminating stops for each route
+    - Gets all valid routes for given line id, including the sequence of stops on each route.
 
 
 ## References/Credits

@@ -18,13 +18,13 @@ impl RequestBuilder for RouteRequest<'_> {
     }
 
     fn get_request_url(&self) -> String {
-        format!("/Line/Route?{}", self.get_parameters().service_type)
+        format!("/Line/Route?{:?}", self.get_parameters().service_type)
     }
 }
 
 impl RouteRequest<'_> {
     pub fn service_type(mut self, service_types: models::ServiceTypes) -> Self {
-        self.parameters.service_type = service_types.to_type().to_string();
+        self.parameters.service_type = Some(service_types.to_type().to_string());
         self
     }
 }
@@ -44,7 +44,7 @@ impl RequestBuilder for RouteRequestById<'_> {
 
     fn get_request_url(&self) -> String {
         format!(
-            "/Line/{}/Route?{}",
+            "/Line/{}/Route?{:?}",
             self.get_parameters().lines,
             self.get_parameters().service_type
         )
@@ -69,7 +69,7 @@ impl RouteRequestById<'_> {
     }
 
     pub fn service_type(mut self, service_types: models::ServiceTypes) -> Self {
-        self.parameters.service_type = service_types.to_type().to_string();
+        self.parameters.service_type = Some(service_types.to_type().to_string());
         self
     }
 }
@@ -364,7 +364,6 @@ impl RequestBuilder for ListServiceTypes<'_> {
     }
 }
 
-
 create_endpoint!(ListSeverityTypes);
 
 impl RequestBuilder for ListSeverityTypes<'_> {
@@ -380,5 +379,138 @@ impl RequestBuilder for ListSeverityTypes<'_> {
 
     fn get_client(&self) -> &Client {
         self.client
+    }
+}
+
+create_endpoint!(ListLinesRoutesByModes);
+
+impl RequestBuilder for ListLinesRoutesByModes<'_> {
+    type Response = models::Line;
+
+    fn get_request_url(&self) -> String {
+        format!(
+            "/Line/Mode/{}/Route?{:?}",
+            self.get_parameters().mode,
+            self.get_parameters().service_type
+        )
+    }
+
+    fn get_parameters(&self) -> &models::Parameters {
+        &self.parameters
+    }
+
+    fn get_client(&self) -> &Client {
+        self.client
+    }
+}
+
+impl ListLinesRoutesByModes<'_> {
+    // Get disruption for all lines by mode
+    pub fn mode(mut self, mode: Vec<models::Mode>) -> Self {
+        let mut modes: String = "".to_owned();
+        for k in mode {
+            //k.line().to_string();
+            if modes == "" {
+                modes.push_str(k.mode().into());
+            } else {
+                modes.push_str(",");
+                modes.push_str(k.mode().into());
+            }
+        }
+        self.parameters.mode = modes;
+        self
+    }
+
+    pub fn service_type(mut self, service_types: models::ServiceTypes) -> Self {
+        self.parameters.service_type = Some(service_types.to_type().to_string());
+        self
+    }
+}
+
+create_endpoint!(ListRoutesForLineIDWithSequence);
+
+impl RequestBuilder for ListRoutesForLineIDWithSequence<'_> {
+    type Response = models::Routes;
+    fn get_parameters(&self) -> &models::Parameters {
+        &self.parameters
+    }
+
+    fn get_request_url(&self) -> String {
+        if self.get_parameters().direction.is_some() {
+            if self.get_parameters().service_type.is_some()
+                && self.get_parameters().exclude_crowding.is_some()
+            {
+                println!(
+                    "{}",
+                    format!(
+                        "/Line/{}/Route/Sequence/{}?{}&excludeCrowding={}",
+                        self.get_parameters().line_id,
+                        self.get_parameters().direction.as_ref().unwrap(),
+                        self.get_parameters().service_type.as_ref().unwrap(),
+                        self.get_parameters().exclude_crowding.as_ref().unwrap()
+                    )
+                );
+                format!(
+                    "/Line/{}/Route/Sequence/{}?{}&excludeCrowding={}",
+                    self.get_parameters().line_id,
+                    self.get_parameters().direction.as_ref().unwrap(),
+                    self.get_parameters().service_type.as_ref().unwrap(),
+                    self.get_parameters().exclude_crowding.as_ref().unwrap()
+                )
+            } else if self.get_parameters().service_type.is_some()
+                && self.get_parameters().exclude_crowding.is_none()
+            {
+                format!(
+                    "/Line/{}/Route/Sequence/{}/?{}",
+                    self.get_parameters().line_id,
+                    self.get_parameters().direction.as_ref().unwrap(),
+                    self.get_parameters().service_type.as_ref().unwrap()
+                )
+            } else if self.get_parameters().service_type.is_none()
+                && self.get_parameters().exclude_crowding.is_some()
+            {
+                format!(
+                    "/Line/{}/Route/Sequence/{}?excludeCrowding={}",
+                    self.get_parameters().line_id,
+                    self.get_parameters().direction.as_ref().unwrap(),
+                    self.get_parameters().exclude_crowding.as_ref().unwrap()
+                )
+            } else {
+                format!(
+                    "/Line/{}/Route/Sequence/{}",
+                    self.get_parameters().line_id,
+                    self.get_parameters().direction.as_ref().unwrap(),
+                )
+            }
+        } else {
+            format!("/Line/{}/Route/Sequence/All", self.get_parameters().line_id)
+        }
+    }
+
+    fn get_client(&self) -> &Client {
+        self.client
+    }
+}
+
+impl ListRoutesForLineIDWithSequence<'_> {
+    // Get line id
+    pub fn line(mut self, id: models::LineID) -> Self {
+        self.parameters.line_id = id.line().to_string();
+        self
+    }
+
+    pub fn service_type(mut self, service_type: models::ServiceTypes) -> Self {
+        self.parameters.service_type = Some(service_type.to_type().to_string());
+        self
+    }
+    pub fn exclude_crowding(mut self, exclude_crowding: bool) -> Self {
+        self.parameters.exclude_crowding = Some(exclude_crowding);
+        self
+    }
+
+    /// direction of line
+    pub fn direction(mut self, direction: models::Directions) -> Self {
+        self.parameters.direction = Some(direction.to_type().to_string());
+        self
     }
 }

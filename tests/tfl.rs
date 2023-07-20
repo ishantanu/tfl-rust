@@ -153,4 +153,32 @@ mod tests {
         let severity_types = client.list_severity_types().fetch().await.unwrap();
         assert!(!severity_types.is_empty());
     }
+
+    #[tokio::test]
+    async fn it_lists_routes_by_modes() {
+        let client = get_client();
+        let modes: Vec<models::Mode> = vec![models::Mode::Bus, models::Mode::Tube];
+        let routes = client
+            .list_lines_routes_by_modes()
+            .mode(modes)
+            .fetch()
+            .await
+            .unwrap();
+        assert!(!routes.is_empty())
+    }
+
+    #[tokio::test]
+    async fn it_lists_routes_by_line_with_sequence() {
+        let client = get_client();
+        let routes = client
+            .list_routes_by_line_with_sequence()
+            .line(models::LineID::Victoria)
+            .direction(models::Directions::Inbound)
+            .service_type(models::ServiceTypes::Regular)
+            .exclude_crowding(true)
+            .fetch()
+            .await
+            .unwrap();
+        assert_eq!(routes.line_name, "Victoria")
+    }
 }
