@@ -45,11 +45,11 @@ async fn it_is_version_1() {
 Get arrival predictions by lines
 ```rust
 async fn get_arrivals_by_lines() {
-    use tfl_api_wrapper::{Client, RequestBuilder, models};
+    use tfl_api_wrapper::{Client, RequestBuilder, linemodels};
     use std::env;
 
     let client = Client::new(env::var("APP_KEY").unwrap().into());
-    let lines: Vec<models::LineID> = vec![models::LineID::Bakerloo, models::LineID::Jubilee];
+    let lines: Vec<linemodels::LineID> = vec![linemodels::LineID::Bakerloo, linemodels::LineID::Jubilee];
     let arrivals = client
         .arrival_predictions_by_lines()
         .line(lines)
