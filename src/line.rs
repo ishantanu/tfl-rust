@@ -363,3 +363,22 @@ impl RequestBuilder for ListServiceTypes<'_> {
         self.client
     }
 }
+
+
+create_endpoint!(ListSeverityTypes);
+
+impl RequestBuilder for ListSeverityTypes<'_> {
+    type Response = models::Serverities;
+
+    fn get_request_url(&self) -> String {
+        "/Line/Meta/Severity".into()
+    }
+
+    fn get_parameters(&self) -> &models::Parameters {
+        &self.parameters
+    }
+
+    fn get_client(&self) -> &Client {
+        self.client
+    }
+}

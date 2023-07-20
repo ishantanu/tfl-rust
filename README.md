@@ -76,6 +76,8 @@ APP_KEY=hjdhajsdas cargo test
     - Gets a list of valid disruption categories
     - Gets a list of valid modes
     - Gets a list of valid ServiceTypes to filter on
+    - Gets a list of valid severity codes
+
 
 
 

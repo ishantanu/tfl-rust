@@ -8,6 +8,7 @@ pub type StopPoint = Vec<StopPoints>;
 pub type DisruptionCategories = Vec<String>;
 pub type Modes = Vec<ValidMode>;
 pub type LServiceTypes = Vec<String>;
+pub type Serverities = Vec<Severity>;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ApiException {
@@ -21,12 +22,30 @@ pub struct ApiException {
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct Severity {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    /// Transport mode name
+    pub mode_name: String,
+    /// Severity level
+    pub severity_level: i64,
+    /// Severity description
+    pub description: String,
+}
+
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ValidMode {
     #[serde(rename = "$type")]
     pub type_field: String,
+    /// Is mode type a TFL service
     pub is_tfl_service: bool,
+    /// Is Fare paying service
     pub is_fare_paying: bool,
+    /// Is it a scheduled service
     pub is_scheduled_service: bool,
+    /// Name of the mode
     pub mode_name: String,
 }
 
@@ -46,22 +65,39 @@ pub struct Version {
 pub struct StopPoints {
     #[serde(rename = "$type")]
     pub type_field: String,
+    /// NAPTAN ID
     pub naptan_id: String,
+    /// List of modes
     pub modes: Vec<String>,
+    /// ICS code
     pub ics_code: String,
+    /// Stop type
     pub stop_type: String,
+    /// Station NAPTAN
     pub station_naptan: String,
+    /// List of lines
     pub lines: Vec<StopPointLine>,
+    /// Line group
     pub line_group: Vec<LineGroup>,
+    /// Line mode groups
     pub line_mode_groups: Vec<LineModeGroup>,
+    /// Status
     pub status: bool,
+    /// ID
     pub id: String,
+    /// Common Name
     pub common_name: String,
+    /// Place type
     pub place_type: String,
+    /// Additional properties
     pub additional_properties: Vec<AdditionalProperty>,
+    /// Children
     pub children: Vec<Children>,
+    /// Latitude
     pub lat: f64,
+    /// Longitude
     pub lon: f64,
+    /// Hub NAPTAN code
     pub hub_naptan_code: Option<String>,
 }
 
@@ -70,13 +106,19 @@ pub struct StopPoints {
 pub struct StopPointLine {
     #[serde(rename = "$type")]
     pub type_field: String,
+    /// Stop point line ID
     pub id: String,
+    /// Stop point line name 
     pub name: String,
+    /// URI
     pub uri: String,
     #[serde(rename = "type")]
     pub type_field2: String,
+    /// Crowding details
     pub crowding: Crowding,
+    /// Route type
     pub route_type: String,
+    /// Status
     pub status: String,
 }
 
@@ -85,8 +127,11 @@ pub struct StopPointLine {
 pub struct LineGroup {
     #[serde(rename = "$type")]
     pub type_field: String,
+    /// NAPTAN ID reference for line group
     pub naptan_id_reference: Option<String>,
+    /// Station atco code for line group
     pub station_atco_code: String,
+    /// Line identifier for line group
     pub line_identifier: Vec<String>,
 }
 
@@ -95,7 +140,9 @@ pub struct LineGroup {
 pub struct LineModeGroup {
     #[serde(rename = "$type")]
     pub type_field: String,
+    /// Mode name of line mode group
     pub mode_name: String,
+    /// Line identifier
     pub line_identifier: Vec<String>,
 }
 
@@ -104,9 +151,13 @@ pub struct LineModeGroup {
 pub struct AdditionalProperty {
     #[serde(rename = "$type")]
     pub type_field: String,
+    /// Additional property category
     pub category: String,
+    /// Additional property key
     pub key: String,
+    /// Source system key
     pub source_system_key: String,
+    /// Porperty value
     pub value: String,
 }
 
@@ -115,22 +166,39 @@ pub struct AdditionalProperty {
 pub struct Children {
     #[serde(rename = "$type")]
     pub type_field: String,
+    /// Children NAPTAN ID
     pub naptan_id: String,
+    /// Children modes
     pub modes: Vec<Value>,
+    /// ICS Code
     pub ics_code: String,
+    /// Station NAPTAN
     pub station_naptan: String,
+    /// Lines
     pub lines: Vec<Value>,
+    /// Line group
     pub line_group: Vec<Value>,
+    /// Line mode groups
     pub line_mode_groups: Vec<Value>,
+    /// Status
     pub status: bool,
+    /// ID
     pub id: String,
+    /// Common name
     pub common_name: String,
+    /// Place type
     pub place_type: String,
+    /// Additional properties
     pub additional_properties: Vec<Value>,
+    /// Children
     pub children: Vec<Value>,
+    /// Latitude
     pub lat: f64,
+    /// Longitude
     pub lon: f64,
+    /// Hub NAPTAN code
     pub hub_naptan_code: Option<String>,
+    /// Indicator
     pub indicator: Option<String>,
 }
 

@@ -2,7 +2,7 @@ use crate::{
     line::{
         ArrivalPredictionsByLines, ArrivalPredictionsByLinesStopPointID, DisruptionByLines,
         DisruptionByMode, ListDisruptionCategories, ListModes, ListServiceTypes,
-        ListStationsByLines, RouteRequest, RouteRequestById,
+        ListStationsByLines, RouteRequest, RouteRequestById, ListSeverityTypes,
     },
     request::*,
 };
@@ -78,5 +78,10 @@ impl Client {
     /// Gets a list of valid ServiceTypes to filter on
     pub fn list_service_types(&self) -> ListServiceTypes<'_> {
         ListServiceTypes::new(self)
+    }
+
+    /// Gets a list of valid severity codes
+    pub fn list_severity_types(&self) -> ListSeverityTypes<'_> {
+        ListSeverityTypes::new(self)
     }
 }

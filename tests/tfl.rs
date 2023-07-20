@@ -146,4 +146,11 @@ mod tests {
         let service_types = client.list_service_types().fetch().await.unwrap();
         assert!(!service_types.is_empty())
     }
+
+    #[tokio::test]
+    async fn it_lists_severity_types() {
+        let client = get_client();
+        let severity_types = client.list_severity_types().fetch().await.unwrap();
+        assert!(!severity_types.is_empty());
+    }
 }
