@@ -33,7 +33,7 @@ pub trait RequestBuilder {
 
     fn get_request_url(&self) -> String;
     fn get_client(&self) -> &Client;
-
+    fn get_parameters(&self) -> &models::Parameters;
     async fn fetch(&self) -> Result<Self::Response, Error> {
         let url = format!("{}{}", ROOT_URL, self.get_request_url());
         let auth_params: Vec<(String, String)> =
@@ -67,14 +67,20 @@ macro_rules! create_endpoint {
     ($name: ident) => {
         pub struct $name<'a> {
             client: &'a Client,
+            parameters: models::Parameters,
         }
         impl<'a> $name<'a> {
             pub(crate) fn new(client: &'a Client) -> Self {
-                Self { client }
+                Self {
+                    client,
+                    parameters: Default::default(),
+                }
             }
         }
     };
 }
+
+pub(crate) use create_endpoint;
 
 create_endpoint!(VersionRequest);
 
@@ -83,6 +89,10 @@ impl RequestBuilder for VersionRequest<'_> {
 
     fn get_request_url(&self) -> String {
         "/version".into()
+    }
+
+    fn get_parameters(&self) -> &models::Parameters {
+        &self.parameters
     }
 
     fn get_client(&self) -> &Client {
