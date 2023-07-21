@@ -2,14 +2,14 @@
 
 A rust crate for using the [Transport for London (TFL) API](https://api.tfl.gov.uk).
 
-*Note: This is currently WIP and not ready for use.*
+*Note: Only the Line API is currently supported. Other APIs are work in progress*
 
 ## Installation
 
 Using `cargo`, add this to your project's `Cargo.toml`:
 ```toml
 [dependencies]
-tfl-api-wrapper = "0.1.2"
+tfl-api-wrapper = "0.1.3"
 ```
 
 ## Usage
