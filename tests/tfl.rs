@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use std::env;
+    use std::{env, vec};
 
     use tfl_api_wrapper::models::{self};
     use tfl_api_wrapper::{linemodels, Client, RequestBuilder};
@@ -219,5 +219,103 @@ mod tests {
         } else {
             assert!(!line_statuses.is_empty())
         }
+    }
+
+    #[tokio::test]
+    async fn it_fetches_line_statuses_between_dates() {
+        let client = get_client();
+        let lines: Vec<linemodels::LineID> = vec![linemodels::LineID::Bakerloo];
+        let line_statuses = client
+            .line_status_between_dates()
+            .line(lines)
+            .start_date("2023-07-19T10:11:12")
+            .end_date("2023-07-20T10:11:12")
+            .detail(true)
+            .fetch()
+            .await
+            .unwrap();
+        if line_statuses.len() == 0 {
+            assert!(line_statuses.is_empty())
+        } else {
+            assert!(!line_statuses.is_empty())
+        }
+    }
+
+    #[tokio::test]
+    async fn it_fetches_line_statuses_for_modes() {
+        let client = get_client();
+        let modes: Vec<models::Mode> = vec![models::Mode::Tube];
+        let line_statuses = client
+            .line_status_by_modes()
+            .mode(modes)
+            .detail(true)
+            .fetch()
+            .await
+            .unwrap();
+        if line_statuses.len() == 0 {
+            assert!(line_statuses.is_empty())
+        } else {
+            assert!(!line_statuses.is_empty())
+        }
+    }
+
+    #[tokio::test]
+    async fn it_fetches_line_statuses_by_id() {
+        let client = get_client();
+        let lines: Vec<linemodels::LineID> = vec![linemodels::LineID::Bakerloo];
+        let line_statuses = client
+            .line_status_by_ids()
+            .line(lines)
+            .detail(true)
+            .fetch()
+            .await
+            .unwrap();
+        if line_statuses.len() == 0 {
+            assert!(line_statuses.is_empty())
+        } else {
+            assert!(!line_statuses.is_empty())
+        }
+    }
+
+    #[tokio::test]
+    async fn it_fetches_timetable_for_station_by_line_id() {
+        let client = get_client();
+        let timetable = client
+            .station_timetable_by_line()
+            .line(linemodels::LineID::Bakerloo)
+            .from_stop_point_id("940GZZLUERB")
+            .fetch()
+            .await
+            .unwrap();
+        assert!(!timetable.disambiguation.disambiguation_options.is_empty())
+    }
+
+    #[tokio::test]
+    async fn it_fetches_timetable_for_station_with_destination_by_line_id() {
+        let client = get_client();
+        let timetable = client
+            .station_timetable_with_destination_by_line()
+            .line(linemodels::LineID::Bakerloo)
+            .from_stop_point_id("940GZZLUERB")
+            .to_stop_point_id("940GZZLUERB")
+            .fetch()
+            .await
+            .unwrap();
+        assert_eq!(timetable.line_name, "Bakerloo")
+    }
+
+    #[tokio::test]
+    async fn it_fetches_lines_routes_by_query() {
+        let client = get_client();
+        let modes: Vec<models::Mode> = vec![models::Mode::Tube];
+        let results = client
+            .search_line_routes_by_query()
+            .query(linemodels::LineID::Victoria)
+            .mode(modes)
+            .service_type(models::ServiceTypes::Regular)
+            .fetch()
+            .await
+            .unwrap();
+        assert!(!results.search_matches.is_empty())
     }
 }

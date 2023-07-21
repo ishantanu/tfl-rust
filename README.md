@@ -42,6 +42,45 @@ async fn it_is_version_1() {
 }
 ```
 
+List valid modes
+```rust
+async fn list_valid_modes() {
+    use tfl_api_wrapper::{Client, RequestBuilder};
+    use std::env;
+
+    let client = Client::new(env::var("APP_KEY").unwrap().into());
+    let valid_modes = client.list_modes().fetch().await.unwrap();
+}
+```
+
+List severity types
+```rust
+async fn list_severity_types() {
+    use tfl_api_wrapper::{Client, RequestBuilder};
+    use std::env;
+
+    let client = Client::new(env::var("APP_KEY").unwrap().into());
+    let severity_types = client.list_severity_types().fetch().await.unwrap();
+}
+```
+
+List routes by mode
+```rust
+async fn list_routes_by_mode() {
+    use tfl_api_wrapper::{Client, RequestBuilder, linemodels, models};
+    use std::env;
+
+    let client = Client::new(env::var("APP_KEY").unwrap().into());
+    let modes: Vec<models::Mode> = vec![models::Mode::Bus, models::Mode::Tube];
+    let routes = client
+        .list_lines_routes_by_modes()
+        .mode(modes)
+        .fetch()
+        .await
+        .unwrap();
+}
+```
+
 Get arrival predictions by lines
 ```rust
 async fn get_arrivals_by_lines() {
@@ -53,6 +92,23 @@ async fn get_arrivals_by_lines() {
     let arrivals = client
         .arrival_predictions_by_lines()
         .line(lines)
+        .fetch()
+        .await
+        .unwrap();
+}
+```
+
+Fetch disruptions by mode
+```rust
+async fn get_disruptions_by_lines() {
+    use tfl_api_wrapper::{Client, RequestBuilder, linemodels, models};
+    use std::env;
+
+    let client = Client::new(env::var("APP_KEY").unwrap().into());
+    let modes: Vec<models::Mode> = vec![models::Mode::Bus, models::Mode::Tube];
+    let disruptions = client
+        .disruptions_by_mode()
+        .mode(modes)
         .fetch()
         .await
         .unwrap();
@@ -83,6 +139,12 @@ APP_KEY=hjdhajsdas cargo test
     - Gets lines that match the specified line ids
     - Gets lines that serve the given modes.
     - Gets the line status for all lines with a given severity
+    - Gets the line status for given line ids during the provided dates e.g Minor Delays
+    - Gets the line status of for all lines for the given modes
+    - Gets the line status of for given line ids e.g Minor Delays
+    - Gets the timetable for a specified station on the give line
+    - Gets the timetable for a specified station on the give line with specified destination
+    - Search for lines or routes matching the query string
 
 ## Limitations
 - Currently, the enum types created for Lines does not contain buses starting with numeric characters (e.g. 101).

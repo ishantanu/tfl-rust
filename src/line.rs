@@ -441,16 +441,6 @@ impl RequestBuilder for ListRoutesForLineIDWithSequence<'_> {
             if self.get_parameters().service_type.is_some()
                 && self.get_parameters().exclude_crowding.is_some()
             {
-                println!(
-                    "{}",
-                    format!(
-                        "/Line/{}/Route/Sequence/{}?{}&excludeCrowding={}",
-                        self.get_parameters().line_id,
-                        self.get_parameters().direction.as_ref().unwrap(),
-                        self.get_parameters().service_type.as_ref().unwrap(),
-                        self.get_parameters().exclude_crowding.as_ref().unwrap()
-                    )
-                );
                 format!(
                     "/Line/{}/Route/Sequence/{}?{}&excludeCrowding={}",
                     self.get_parameters().line_id,
@@ -594,7 +584,10 @@ impl RequestBuilder for LineStatusBySeverity<'_> {
     type Response = models::LineSeverity;
 
     fn get_request_url(&self) -> String {
-        format!("/Line/Status/{}", self.get_parameters().severity)
+        format!(
+            "/Line/Status/{}",
+            self.get_parameters().severity.as_ref().unwrap()
+        )
     }
 
     fn get_parameters(&self) -> &models::Parameters {
@@ -609,7 +602,339 @@ impl RequestBuilder for LineStatusBySeverity<'_> {
 impl LineStatusBySeverity<'_> {
     // Get disruption for all lines by mode
     pub fn level(mut self, sev: i8) -> Self {
-        self.parameters.severity = sev;
+        self.parameters.severity = Some(sev);
+        self
+    }
+}
+
+create_endpoint!(LineStatusBetweenDates);
+
+impl RequestBuilder for LineStatusBetweenDates<'_> {
+    type Response = models::LineStatusBetweenDates;
+
+    fn get_request_url(&self) -> String {
+        if self.get_parameters().detail.is_some() {
+            format!(
+                "/Line/{}/Status/{}/to/{}?detail={}",
+                self.get_parameters().lines,
+                self.get_parameters().start_date,
+                self.get_parameters().end_date,
+                self.get_parameters().detail.as_ref().unwrap()
+            )
+        } else {
+            format!(
+                "/Line/{}/Status/{}/to/{}",
+                self.get_parameters().lines,
+                self.get_parameters().start_date,
+                self.get_parameters().end_date
+            )
+        }
+    }
+
+    fn get_parameters(&self) -> &models::Parameters {
+        &self.parameters
+    }
+
+    fn get_client(&self) -> &Client {
+        self.client
+    }
+}
+
+impl LineStatusBetweenDates<'_> {
+    // filter by line
+    pub fn line(mut self, line: Vec<linemodels::LineID>) -> Self {
+        let mut lines: String = "".to_owned();
+        for k in line {
+            //k.line().to_string();
+            if lines == "" {
+                lines.push_str(k.line().into());
+            } else {
+                lines.push_str(",");
+                lines.push_str(k.line().into());
+            }
+        }
+        self.parameters.lines = lines;
+        self
+    }
+
+    // Start date
+    pub fn start_date(mut self, start_date: &str) -> Self {
+        self.parameters.start_date = start_date.to_string();
+        self
+    }
+
+    // End date
+    pub fn end_date(mut self, end_date: &str) -> Self {
+        self.parameters.end_date = end_date.to_string();
+        self
+    }
+
+    // detail
+    pub fn detail(mut self, detail: bool) -> Self {
+        self.parameters.detail = Some(detail);
+        self
+    }
+}
+
+create_endpoint!(LineStatusByModes);
+
+impl RequestBuilder for LineStatusByModes<'_> {
+    type Response = models::LineStatusForModes;
+
+    fn get_request_url(&self) -> String {
+        if self.get_parameters().detail.is_some() && self.get_parameters().severity.is_some() {
+            format!(
+                "/Line/Mode/{}/Status?detail={}&severityLevel={}",
+                self.get_parameters().modes,
+                self.get_parameters().detail.as_ref().unwrap(),
+                self.get_parameters().severity.as_ref().unwrap()
+            )
+        } else if self.get_parameters().detail.is_none() && self.get_parameters().severity.is_some()
+        {
+            format!(
+                "/Line/Mode/{}/Status?severityLevel={}",
+                self.get_parameters().modes,
+                self.get_parameters().severity.as_ref().unwrap()
+            )
+        } else {
+            format!("/Line/Mode/{}/Status", self.get_parameters().modes)
+        }
+    }
+
+    fn get_parameters(&self) -> &models::Parameters {
+        &self.parameters
+    }
+
+    fn get_client(&self) -> &Client {
+        self.client
+    }
+}
+
+impl LineStatusByModes<'_> {
+    // Get disruption for all lines by mode
+    pub fn mode(mut self, mode: Vec<models::Mode>) -> Self {
+        let mut modes: String = "".to_owned();
+        for k in mode {
+            //k.line().to_string();
+            if modes == "" {
+                modes.push_str(k.mode().into());
+            } else {
+                modes.push_str(",");
+                modes.push_str(k.mode().into());
+            }
+        }
+        self.parameters.modes = modes;
+        self
+    }
+
+    // detail
+    pub fn detail(mut self, detail: bool) -> Self {
+        self.parameters.detail = Some(detail);
+        self
+    }
+
+    pub fn severity(mut self, severity: i8) -> Self {
+        self.parameters.severity = Some(severity);
+        self
+    }
+}
+
+create_endpoint!(LineStatusByIDs);
+
+impl RequestBuilder for LineStatusByIDs<'_> {
+    type Response = models::LineStatusForModes;
+
+    fn get_request_url(&self) -> String {
+        if self.get_parameters().detail.is_some() {
+            format!(
+                "/Line/{}/Status?detail={}",
+                self.get_parameters().lines,
+                self.get_parameters().detail.as_ref().unwrap()
+            )
+        } else {
+            format!("/Line/{}/Status", self.get_parameters().lines)
+        }
+    }
+
+    fn get_parameters(&self) -> &models::Parameters {
+        &self.parameters
+    }
+
+    fn get_client(&self) -> &Client {
+        self.client
+    }
+}
+
+impl LineStatusByIDs<'_> {
+    // filter by line
+    pub fn line(mut self, line: Vec<linemodels::LineID>) -> Self {
+        let mut lines: String = "".to_owned();
+        for k in line {
+            //k.line().to_string();
+            if lines == "" {
+                lines.push_str(k.line().into());
+            } else {
+                lines.push_str(",");
+                lines.push_str(k.line().into());
+            }
+        }
+        self.parameters.lines = lines;
+        self
+    }
+
+    // detail
+    pub fn detail(mut self, detail: bool) -> Self {
+        self.parameters.detail = Some(detail);
+        self
+    }
+}
+
+create_endpoint!(StationTimetableByLine);
+
+impl RequestBuilder for StationTimetableByLine<'_> {
+    type Response = models::TimetableForStationByLineID;
+
+    fn get_request_url(&self) -> String {
+        format!(
+            "/Line/{}/Timetable/{}",
+            self.get_parameters().line_id,
+            self.get_parameters().stop_point_id
+        )
+    }
+
+    fn get_parameters(&self) -> &models::Parameters {
+        &self.parameters
+    }
+
+    fn get_client(&self) -> &Client {
+        self.client
+    }
+}
+
+impl StationTimetableByLine<'_> {
+    // Get line id
+    pub fn line(mut self, id: linemodels::LineID) -> Self {
+        self.parameters.line_id = id.line().to_string();
+        self
+    }
+
+    // from stop point id
+    pub fn from_stop_point_id(mut self, stop_point_id: &str) -> Self {
+        self.parameters.stop_point_id = stop_point_id.to_string();
+        self
+    }
+}
+
+create_endpoint!(StationTimetableWithDestinationByLine);
+
+impl RequestBuilder for StationTimetableWithDestinationByLine<'_> {
+    type Response = models::TimetableForStationWithDestinationByLineID;
+
+    fn get_request_url(&self) -> String {
+        format!(
+            "/Line/{}/Timetable/{}/to/{}",
+            self.get_parameters().line_id,
+            self.get_parameters().from_stop_point_id,
+            self.get_parameters().to_stop_point_id
+        )
+    }
+
+    fn get_parameters(&self) -> &models::Parameters {
+        &self.parameters
+    }
+
+    fn get_client(&self) -> &Client {
+        self.client
+    }
+}
+
+impl StationTimetableWithDestinationByLine<'_> {
+    // Get line id
+    pub fn line(mut self, id: linemodels::LineID) -> Self {
+        self.parameters.line_id = id.line().to_string();
+        self
+    }
+
+    // from stop point id
+    pub fn from_stop_point_id(mut self, from_stop_point_id: &str) -> Self {
+        self.parameters.from_stop_point_id = from_stop_point_id.to_string();
+        self
+    }
+
+    // to stop point id
+    pub fn to_stop_point_id(mut self, to_stop_point_id: &str) -> Self {
+        self.parameters.to_stop_point_id = to_stop_point_id.to_string();
+        self
+    }
+}
+
+create_endpoint!(SearchLineRoutesByQuery);
+
+impl RequestBuilder for SearchLineRoutesByQuery<'_> {
+    type Response = models::SearchLinesRoutesByQuery;
+
+    fn get_request_url(&self) -> String {
+        if !self.get_parameters().modes.is_empty() && self.get_parameters().service_type.is_some() {
+            format!(
+                "/Line/Search/{}?modes={}&serviceTypes={}",
+                self.get_parameters().query,
+                self.get_parameters().modes,
+                self.get_parameters().service_type.as_ref().unwrap()
+            )
+        } else if self.get_parameters().modes.is_empty()
+            && self.get_parameters().service_type.is_some()
+        {
+            format!(
+                "/Line/Search/{}?serviceTypes={}",
+                self.get_parameters().query,
+                self.get_parameters().service_type.as_ref().unwrap()
+            )
+        } else if !self.get_parameters().modes.is_empty()
+            && self.get_parameters().service_type.is_none()
+        {
+            format!(
+                "/Line/Search/{}?modes={}",
+                self.get_parameters().query,
+                self.get_parameters().modes
+            )
+        } else {
+            format!("/Line/Search/{}", self.get_parameters().query)
+        }
+    }
+
+    fn get_parameters(&self) -> &models::Parameters {
+        &self.parameters
+    }
+
+    fn get_client(&self) -> &Client {
+        self.client
+    }
+}
+
+impl SearchLineRoutesByQuery<'_> {
+    // Get line id
+    pub fn query(mut self, id: linemodels::LineID) -> Self {
+        self.parameters.query = id.line().to_string();
+        self
+    }
+
+    pub fn mode(mut self, mode: Vec<models::Mode>) -> Self {
+        let mut modes: String = "".to_owned();
+        for k in mode {
+            //k.line().to_string();
+            if modes == "" {
+                modes.push_str(k.mode().into());
+            } else {
+                modes.push_str(",");
+                modes.push_str(k.mode().into());
+            }
+        }
+        self.parameters.modes = modes;
+        self
+    }
+
+    pub fn service_type(mut self, service_types: models::ServiceTypes) -> Self {
+        self.parameters.service_type = Some(service_types.to_type().to_string());
         self
     }
 }

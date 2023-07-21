@@ -11,6 +11,8 @@ pub type LServiceTypes = Vec<String>;
 pub type Serverities = Vec<Severity>;
 pub type Route = Vec<Routes>;
 pub type LineSeverity = Vec<LineSeverities>;
+pub type LineStatusBetweenDates = Vec<LineStatusesDates>;
+pub type LineStatusForModes = Vec<LineStatusesDates>;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ApiException {
@@ -20,6 +22,247 @@ pub struct ApiException {
     pub doc: String,
     /// TBD
     pub display: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SearchLinesRoutesByQuery {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub input: String,
+    pub search_matches: Vec<SearchMatch>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SearchMatch {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub line_id: String,
+    pub mode: String,
+    pub line_name: String,
+    pub line_route_section: Vec<LineRouteSection>,
+    pub matched_route_sections: Vec<Value>,
+    pub matched_stops: Vec<Value>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LineRouteSection {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub route_id: i64,
+    pub direction: String,
+    pub destination: String,
+    pub from_station: String,
+    pub to_station: String,
+    pub service_type: String,
+    pub vehicle_destination_text: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TimetableForStationWithDestinationByLineID {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub line_id: String,
+    pub line_name: String,
+    pub direction: String,
+    pub stations: Vec<Station>,
+    pub stops: Vec<Stop>,
+    pub timetable: Timetable,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Stop {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub parent_id: Option<String>,
+    pub station_id: String,
+    pub ics_id: String,
+    pub top_most_parent_id: String,
+    pub modes: Vec<String>,
+    pub stop_type: String,
+    pub zone: String,
+    pub lines: Vec<Line2>,
+    pub status: bool,
+    pub id: String,
+    pub name: String,
+    pub lat: f64,
+    pub lon: f64,
+    pub has_disruption: Option<bool>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Timetable {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub departure_stop_id: String,
+    pub routes: Vec<TimetableRoute>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TimetableRoute {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub station_intervals: Vec<StationInterval>,
+    pub schedules: Vec<Schedule>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct StationInterval {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub id: String,
+    pub intervals: Vec<Interval>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Interval {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub stop_id: String,
+    pub time_to_arrival: f64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Schedule {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub name: String,
+    pub known_journeys: Vec<KnownJourney>,
+    pub first_journey: FirstJourney,
+    pub last_journey: LastJourney,
+    pub periods: Vec<Period>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct KnownJourney {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub hour: String,
+    pub minute: String,
+    pub interval_id: i64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FirstJourney {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub hour: String,
+    pub minute: String,
+    pub interval_id: i64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LastJourney {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub hour: String,
+    pub minute: String,
+    pub interval_id: i64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Period {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    #[serde(rename = "type")]
+    pub type_field2: String,
+    pub from_time: FromTime,
+    pub to_time: ToTime,
+    pub frequency: Option<Frequency>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FromTime {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub hour: String,
+    pub minute: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ToTime {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub hour: String,
+    pub minute: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Frequency {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub lowest_frequency: f64,
+    pub highest_frequency: f64,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TimetableForStationByLineID {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub disambiguation: Disambiguation,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Disambiguation {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub disambiguation_options: Vec<DisambiguationOption>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DisambiguationOption {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub description: String,
+    pub uri: String,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LineStatusesDates {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub id: String,
+    pub name: String,
+    pub mode_name: String,
+    pub disruptions: Vec<Value>,
+    pub created: String,
+    pub modified: String,
+    pub line_statuses: Vec<LineStatusesBetweenDates>,
+    pub route_sections: Vec<Value>,
+    pub service_types: Vec<ServiceType>,
+    pub crowding: Crowding,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct LineStatusesBetweenDates {
+    #[serde(rename = "$type")]
+    pub type_field: String,
+    pub id: i64,
+    pub status_severity: i64,
+    pub status_severity_description: String,
+    pub created: String,
+    pub validity_periods: Vec<Value>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -633,9 +876,15 @@ pub struct Parameters {
     pub service_type: Option<String>,
     pub modes: String,
     pub stop_point_id: String,
+    pub from_stop_point_id: String,
+    pub to_stop_point_id: String,
     pub direction: Option<String>,
     pub destination_station_id: Option<String>,
     pub tfl_operated_national_rail_stations_only: Option<bool>,
     pub exclude_crowding: Option<bool>,
-    pub severity: i8,
+    pub severity: Option<i8>,
+    pub start_date: String,
+    pub end_date: String,
+    pub detail: Option<bool>,
+    pub query: String,
 }

@@ -1,9 +1,11 @@
 use crate::{
     line::{
         ArrivalPredictionsByLines, ArrivalPredictionsByLinesStopPointID, DisruptionByLines,
-        DisruptionByMode, LineStatusBySeverity, ListDisruptionCategories, ListLinesByID,
-        ListLinesByModes, ListLinesRoutesByModes, ListModes, ListRoutesForLineIDWithSequence,
-        ListServiceTypes, ListSeverityTypes, ListStationsByLines, RouteRequest, RouteRequestById,
+        DisruptionByMode, LineStatusBetweenDates, LineStatusByIDs, LineStatusByModes,
+        LineStatusBySeverity, ListDisruptionCategories, ListLinesByID, ListLinesByModes,
+        ListLinesRoutesByModes, ListModes, ListRoutesForLineIDWithSequence, ListServiceTypes,
+        ListSeverityTypes, ListStationsByLines, RouteRequest, RouteRequestById,
+        SearchLineRoutesByQuery, StationTimetableByLine, StationTimetableWithDestinationByLine,
     },
     request::*,
 };
@@ -109,5 +111,37 @@ impl Client {
     /// Gets the line status for all lines with a given severity
     pub fn line_status_by_severity(&self) -> LineStatusBySeverity<'_> {
         LineStatusBySeverity::new(self)
+    }
+
+    /// Gets the line status for given line ids during the provided dates e.g Minor Delays
+    pub fn line_status_between_dates(&self) -> LineStatusBetweenDates<'_> {
+        LineStatusBetweenDates::new(self)
+    }
+
+    /// Gets the line status of for all lines for the given modes
+    pub fn line_status_by_modes(&self) -> LineStatusByModes<'_> {
+        LineStatusByModes::new(self)
+    }
+
+    /// Gets the line status of for given line ids e.g Minor Delays
+    pub fn line_status_by_ids(&self) -> LineStatusByIDs<'_> {
+        LineStatusByIDs::new(self)
+    }
+
+    /// Gets the timetable for a specified station on the give line
+    pub fn station_timetable_by_line(&self) -> StationTimetableByLine<'_> {
+        StationTimetableByLine::new(self)
+    }
+
+    /// Gets the timetable for a specified station on the give line with specified destination
+    pub fn station_timetable_with_destination_by_line(
+        &self,
+    ) -> StationTimetableWithDestinationByLine<'_> {
+        StationTimetableWithDestinationByLine::new(self)
+    }
+
+    /// Search for lines or routes matching the query string
+    pub fn search_line_routes_by_query(&self) -> SearchLineRoutesByQuery<'_> {
+        SearchLineRoutesByQuery::new(self)
     }
 }
