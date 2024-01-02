@@ -27,6 +27,14 @@ impl Error {
     }
 }
 
+impl std::fmt::Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{:?} ({})", self.api_error, self.http_status)
+    }
+}
+
+impl std::error::Error for Error {}
+
 #[async_trait]
 pub trait RequestBuilder {
     type Response: DeserializeOwned + std::fmt::Debug;
