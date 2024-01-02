@@ -776,6 +776,7 @@ pub struct Disruptions {
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Arrivals {
     #[serde(rename = "$type")]
     pub type_field: String,
