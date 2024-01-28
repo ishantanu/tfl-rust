@@ -1,3 +1,4 @@
+#[derive(Debug, Copy, Clone, strum::EnumString)]
 pub enum LineID {
     Bakerloo,
     Central,
