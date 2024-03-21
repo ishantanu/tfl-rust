@@ -13,7 +13,7 @@ mod tests {
     async fn it_is_expected_version() {
         let client = get_client();
         let ver = client.api_version().fetch().await.unwrap();
-        assert_eq!(ver.version, "master.5796\r\n");
+        assert_eq!(ver.version, "master.5892\r\n");
     }
 
     #[tokio::test]
@@ -35,6 +35,15 @@ mod tests {
         let lines: Vec<linemodels::LineID> = vec![linemodels::LineID::Bakerloo];
         let route = client.routes_by_line().line(lines).fetch().await.unwrap();
         assert_eq!(route.name, "Bakerloo");
+    }
+
+    #[tokio::test]
+    async fn it_fetches_routes_by_and_line() {
+        let client = get_client();
+
+        let lines: Vec<linemodels::LineID> = vec![linemodels::LineID::HammersmithAndCity];
+        let route = client.routes_by_line().line(lines).fetch().await.unwrap();
+        assert_eq!(route.name, "Hammersmith & City");
     }
 
     #[tokio::test]
