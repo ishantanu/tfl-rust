@@ -1,5 +1,3 @@
-use strum::IntoEnumIterator;
-
 #[cfg(test)]
 mod tests {
     use std::{env, vec};
