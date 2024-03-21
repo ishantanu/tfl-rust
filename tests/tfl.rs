@@ -1,7 +1,10 @@
+use strum::IntoEnumIterator;
+
 #[cfg(test)]
 mod tests {
     use std::{env, vec};
 
+    use strum::IntoEnumIterator;
     use tfl_api_wrapper::models::{self};
     use tfl_api_wrapper::{linemodels, Client, RequestBuilder};
 
@@ -44,6 +47,23 @@ mod tests {
         let lines: Vec<linemodels::LineID> = vec![linemodels::LineID::HammersmithAndCity];
         let route = client.routes_by_line().line(lines).fetch().await.unwrap();
         assert_eq!(route.name, "Hammersmith & City");
+    }
+
+    #[tokio::test]
+    async fn it_fetches_routes_for_all_overridden_lines() {
+        let client = get_client();
+
+        for l in linemodels::LineID::iter() {
+            let l_str = Into::<&'static str>::into(l);
+            if l_str != l.line() {
+                println!("Testing LineID: {} -> {}", l.line(), l_str);
+                let lines: Vec<linemodels::LineID> = vec![l];
+                let route = client.routes_by_line().line(lines).fetch().await.expect(
+                    format!("Failed whilst testing LineID: {} -> {}", l.line(), l_str).as_str(),
+                );
+                assert_eq!(route.name, l_str);
+            }
+        }
     }
 
     #[tokio::test]
