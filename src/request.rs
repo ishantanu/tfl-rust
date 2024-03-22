@@ -27,14 +27,6 @@ impl Error {
     }
 }
 
-impl std::fmt::Display for Error {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{:?} ({})", self.api_error, self.http_status)
-    }
-}
-
-impl std::error::Error for Error {}
-
 #[async_trait]
 pub trait RequestBuilder {
     type Response: DeserializeOwned + std::fmt::Debug;
@@ -44,6 +36,7 @@ pub trait RequestBuilder {
     fn get_parameters(&self) -> &models::Parameters;
     async fn fetch(&self) -> Result<Self::Response, Error> {
         let url = format!("{}{}", ROOT_URL, self.get_request_url());
+        // println!("Request: {}", url);
         let auth_params: Vec<(String, String)> =
             vec![("app_key".into(), self.get_client().app_key.clone())];
 
@@ -64,7 +57,11 @@ pub trait RequestBuilder {
             ));
         }
 
-        response.json::<Self::Response>().await.map_err(|e| {
+        let t = response.text().await.expect("No body");
+        // println!("Response: {}", t);
+
+        serde_json::from_str::<Self::Response>(&t).map_err(|e| {
+            //response.json::<Self::Response>().await.map_err(|e| {
             println!("{e:#?}");
             Error::from_status(StatusCode::BAD_REQUEST)
         })

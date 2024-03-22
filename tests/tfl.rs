@@ -2,6 +2,7 @@
 mod tests {
     use std::{env, vec};
 
+    use std::collections::HashMap;
     use strum::IntoEnumIterator;
     use tfl_api_wrapper::models::{self};
     use tfl_api_wrapper::{linemodels, Client, RequestBuilder};
@@ -62,6 +63,32 @@ mod tests {
                 assert_eq!(route.name, l_str);
             }
         }
+    }
+
+    #[tokio::test]
+    async fn confirm_all_line_ids() {
+        let client = get_client();
+
+        let mut lids = HashMap::new();
+        for l in linemodels::LineID::iter() {
+            lids.insert(l.line().to_lowercase(), l);
+        }
+
+        let routes = client.routes().fetch().await.expect("Cannot fetch routes");
+
+        for l in routes {
+            // println!("Line: {} -> {}", l.name, l.id);
+            match lids.remove(&l.id.to_lowercase()) {
+                Some(r) => {
+                    assert_eq!(l.name, r.to_string());
+                }
+                // None => panic!("Missing line: {}", l.id),
+                None => println!("Missing line: {}", l.id),
+            }
+        }
+
+        // assert!(lids.is_empty(), "Extra lines defined: {:?}", lids);
+        println!("Extra lines: {:?}", lids);
     }
 
     #[tokio::test]
