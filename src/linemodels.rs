@@ -5,9 +5,10 @@ use strum::EnumProperty;
 // The display name (`to_string()`) matches TFL's display name for the line.
 //
 // The ID (`line()`) is TFL's ID for the line. This mostly matches the display name, but for more
-// complex lines uses kebab-case. We only need to override the ID for lines that don't use their
-// display name as the ID. Note: Because we use the display as the default, our IDs are
-// capitalised. The TFL API ignores cases for IDs.
+// complex lines uses kebab-case. There are also some inconsistent lines.
+// We only need to override the ID for lines that don't use their display name as the ID.
+// Note: Because we use the display as the default, our IDs are capitalised.
+// The TFL API ignores case for IDs.
 
 #[derive(
     Debug,
