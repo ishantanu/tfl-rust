@@ -125,7 +125,7 @@ APP_KEY=hjdhajsdas cargo test
 
 As this library maintains a `LineID` enum, we have a tool to compare this with
 the API's list of valid routes. It reports on the status of `LineID`, listing
-which lines are missing, which have an mismatched `to_string()` mapping and
+which lines are missing, which have a mismatched `to_string()` mapping and
 which are no longer in use.
 
 Run:
