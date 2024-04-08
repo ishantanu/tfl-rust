@@ -121,6 +121,19 @@ You can run the tests by running:
 APP_KEY=hjdhajsdas cargo test
 ```
 
+## Developer
+
+As this library maintains a `LineID` enum, we have a tool to compare this with
+the API's list of valid routes. It reports on the status of `LineID`, listing
+which lines are missing, which have a mismatched `to_string()` mapping and
+which are no longer in use.
+
+Run:
+
+```sh
+APP_KEY=hjdhajsdas cargo run --bin line-id-check
+```
+
 ## Implemented APIs
 - Version - Shows the API version
 - Line
