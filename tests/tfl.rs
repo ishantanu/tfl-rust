@@ -2,7 +2,6 @@
 mod tests {
     use std::{env, vec};
 
-    
     use strum::IntoEnumIterator;
     use tfl_api_wrapper::models::{self};
     use tfl_api_wrapper::{linemodels, Client, RequestBuilder};
@@ -15,7 +14,7 @@ mod tests {
     async fn it_is_expected_version() {
         let client = get_client();
         let ver = client.api_version().fetch().await.unwrap();
-        assert_eq!(ver.version, "master.5909\r\n");
+        assert_eq!(ver.version, "master.5988\r\n");
     }
 
     #[tokio::test]
