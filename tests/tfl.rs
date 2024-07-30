@@ -56,9 +56,14 @@ mod tests {
             if l_str != l.line() {
                 println!("Testing LineID: {} -> {}", l.line(), l_str);
                 let lines: Vec<linemodels::LineID> = vec![l];
-                let route = client.routes_by_line().line(lines).fetch().await.expect(
-                    format!("Failed whilst testing LineID: {} -> {}", l.line(), l_str).as_str(),
-                );
+                let route = client
+                    .routes_by_line()
+                    .line(lines)
+                    .fetch()
+                    .await
+                    .unwrap_or_else(|_| {
+                        panic!("Failed whilst testing LineID: {} -> {}", l.line(), l_str)
+                    });
                 assert_eq!(route.name, l_str);
             }
         }
@@ -75,7 +80,7 @@ mod tests {
             .fetch()
             .await
             .unwrap();
-        if disruptions.len() == 0 {
+        if disruptions.is_empty() {
             assert!(disruptions.is_empty());
         } else {
             assert!(!disruptions.is_empty());
@@ -94,7 +99,7 @@ mod tests {
             .fetch()
             .await
             .unwrap();
-        if disruptions.len() == 0 {
+        if disruptions.is_empty() {
             assert!(disruptions.is_empty());
         } else {
             assert!(!disruptions.is_empty());
@@ -113,7 +118,7 @@ mod tests {
             .fetch()
             .await
             .unwrap();
-        if arrivals.len() == 0 {
+        if arrivals.is_empty() {
             assert!(arrivals.is_empty());
         } else {
             assert!(!arrivals.is_empty());
@@ -133,7 +138,7 @@ mod tests {
             .await
             .unwrap();
         println!("{:?}", predicted_arrivals);
-        if predicted_arrivals.len() == 0 {
+        if predicted_arrivals.is_empty() {
             assert!(predicted_arrivals.is_empty());
         } else {
             assert!(!predicted_arrivals.is_empty())
@@ -240,7 +245,7 @@ mod tests {
             .fetch()
             .await
             .unwrap();
-        if line_statuses.len() == 0 {
+        if line_statuses.is_empty() {
             assert!(line_statuses.is_empty())
         } else {
             assert!(!line_statuses.is_empty())
@@ -260,7 +265,7 @@ mod tests {
             .fetch()
             .await
             .unwrap();
-        if line_statuses.len() == 0 {
+        if line_statuses.is_empty() {
             assert!(line_statuses.is_empty())
         } else {
             assert!(!line_statuses.is_empty())
@@ -278,7 +283,7 @@ mod tests {
             .fetch()
             .await
             .unwrap();
-        if line_statuses.len() == 0 {
+        if line_statuses.is_empty() {
             assert!(line_statuses.is_empty())
         } else {
             assert!(!line_statuses.is_empty())
@@ -296,7 +301,7 @@ mod tests {
             .fetch()
             .await
             .unwrap();
-        if line_statuses.len() == 0 {
+        if line_statuses.is_empty() {
             assert!(line_statuses.is_empty())
         } else {
             assert!(!line_statuses.is_empty())

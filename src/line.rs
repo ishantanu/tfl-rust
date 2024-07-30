@@ -58,11 +58,11 @@ impl RouteRequestById<'_> {
         let mut lines: String = "".to_owned();
         for k in line {
             //k.line().to_string();
-            if lines == "" {
-                lines.push_str(k.line().into());
+            if lines.is_empty() {
+                lines.push_str(k.line());
             } else {
-                lines.push_str(",");
-                lines.push_str(k.line().into());
+                lines.push(',');
+                lines.push_str(k.line());
             }
         }
         self.parameters.lines = lines;
@@ -99,11 +99,11 @@ impl DisruptionByMode<'_> {
         let mut modes: String = "".to_owned();
         for k in mode {
             //k.line().to_string();
-            if modes == "" {
-                modes.push_str(k.mode().into());
+            if modes.is_empty() {
+                modes.push_str(k.mode());
             } else {
-                modes.push_str(",");
-                modes.push_str(k.mode().into());
+                modes.push(',');
+                modes.push_str(k.mode());
             }
         }
         self.parameters.modes = modes;
@@ -135,11 +135,11 @@ impl DisruptionByLines<'_> {
         let mut lines: String = "".to_owned();
         for k in line {
             //k.line().to_string();
-            if lines == "" {
-                lines.push_str(k.line().into());
+            if lines.is_empty() {
+                lines.push_str(k.line());
             } else {
-                lines.push_str(",");
-                lines.push_str(k.line().into());
+                lines.push(',');
+                lines.push_str(k.line());
             }
         }
         self.parameters.lines = lines;
@@ -171,11 +171,11 @@ impl ArrivalPredictionsByLines<'_> {
         let mut lines: String = "".to_owned();
         for k in line {
             //k.line().to_string();
-            if lines == "" {
-                lines.push_str(k.line().into());
+            if lines.is_empty() {
+                lines.push_str(k.line());
             } else {
-                lines.push_str(",");
-                lines.push_str(k.line().into());
+                lines.push(',');
+                lines.push_str(k.line());
             }
         }
         self.parameters.lines = lines;
@@ -206,15 +206,6 @@ impl RequestBuilder for ArrivalPredictionsByLinesStopPointID<'_> {
                     self.get_parameters().lines,
                     self.get_parameters().stop_point_id
                 )
-            } else if self.get_parameters().direction.is_some()
-                && self.get_parameters().destination_station_id.is_none()
-            {
-                format!(
-                    "/Line/{}/Arrivals/{}?{:?}",
-                    self.get_parameters().lines,
-                    self.get_parameters().stop_point_id,
-                    self.get_parameters().direction
-                )
             } else {
                 format!(
                     "/Line/{}/Arrivals/{}?{:?}",
@@ -239,11 +230,11 @@ impl ArrivalPredictionsByLinesStopPointID<'_> {
         let mut lines: String = "".to_owned();
         for k in line {
             //k.line().to_string();
-            if lines == "" {
-                lines.push_str(k.line().into());
+            if lines.is_empty() {
+                lines.push_str(k.line());
             } else {
-                lines.push_str(",");
-                lines.push_str(k.line().into());
+                lines.push(',');
+                lines.push_str(k.line());
             }
         }
         self.parameters.lines = lines;
@@ -290,11 +281,11 @@ impl ListStationsByLines<'_> {
         let mut lines: String = "".to_owned();
         for k in line {
             //k.line().to_string();
-            if lines == "" {
-                lines.push_str(k.line().into());
+            if lines.is_empty() {
+                lines.push_str(k.line());
             } else {
-                lines.push_str(",");
-                lines.push_str(k.line().into());
+                lines.push(',');
+                lines.push_str(k.line());
             }
         }
         self.parameters.lines = lines;
@@ -411,11 +402,11 @@ impl ListLinesRoutesByModes<'_> {
         let mut modes: String = "".to_owned();
         for k in mode {
             //k.line().to_string();
-            if modes == "" {
-                modes.push_str(k.mode().into());
+            if modes.is_empty() {
+                modes.push_str(k.mode());
             } else {
-                modes.push_str(",");
-                modes.push_str(k.mode().into());
+                modes.push(',');
+                modes.push_str(k.mode());
             }
         }
         self.parameters.modes = modes;
@@ -530,11 +521,11 @@ impl ListLinesByID<'_> {
         let mut lines: String = "".to_owned();
         for k in line {
             //k.line().to_string();
-            if lines == "" {
-                lines.push_str(k.line().into());
+            if lines.is_empty() {
+                lines.push_str(k.line());
             } else {
-                lines.push_str(",");
-                lines.push_str(k.line().into());
+                lines.push(',');
+                lines.push_str(k.line());
             }
         }
         self.parameters.lines = lines;
@@ -566,11 +557,11 @@ impl ListLinesByModes<'_> {
         let mut modes: String = "".to_owned();
         for k in mode {
             //k.line().to_string();
-            if modes == "" {
-                modes.push_str(k.mode().into());
+            if modes.is_empty() {
+                modes.push_str(k.mode());
             } else {
-                modes.push_str(",");
-                modes.push_str(k.mode().into());
+                modes.push(',');
+                modes.push_str(k.mode());
             }
         }
         self.parameters.modes = modes;
@@ -646,11 +637,11 @@ impl LineStatusBetweenDates<'_> {
         let mut lines: String = "".to_owned();
         for k in line {
             //k.line().to_string();
-            if lines == "" {
-                lines.push_str(k.line().into());
+            if lines.is_empty() {
+                lines.push_str(k.line());
             } else {
-                lines.push_str(",");
-                lines.push_str(k.line().into());
+                lines.push(',');
+                lines.push_str(k.line());
             }
         }
         self.parameters.lines = lines;
@@ -716,11 +707,11 @@ impl LineStatusByModes<'_> {
         let mut modes: String = "".to_owned();
         for k in mode {
             //k.line().to_string();
-            if modes == "" {
-                modes.push_str(k.mode().into());
+            if modes.is_empty() {
+                modes.push_str(k.mode());
             } else {
-                modes.push_str(",");
-                modes.push_str(k.mode().into());
+                modes.push(',');
+                modes.push_str(k.mode());
             }
         }
         self.parameters.modes = modes;
@@ -771,11 +762,11 @@ impl LineStatusByIDs<'_> {
         let mut lines: String = "".to_owned();
         for k in line {
             //k.line().to_string();
-            if lines == "" {
-                lines.push_str(k.line().into());
+            if lines.is_empty() {
+                lines.push_str(k.line());
             } else {
-                lines.push_str(",");
-                lines.push_str(k.line().into());
+                lines.push(',');
+                lines.push_str(k.line());
             }
         }
         self.parameters.lines = lines;
@@ -922,11 +913,11 @@ impl SearchLineRoutesByQuery<'_> {
         let mut modes: String = "".to_owned();
         for k in mode {
             //k.line().to_string();
-            if modes == "" {
-                modes.push_str(k.mode().into());
+            if modes.is_empty() {
+                modes.push_str(k.mode());
             } else {
-                modes.push_str(",");
-                modes.push_str(k.mode().into());
+                modes.push(',');
+                modes.push_str(k.mode());
             }
         }
         self.parameters.modes = modes;
