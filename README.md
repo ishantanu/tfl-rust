@@ -1,5 +1,7 @@
 # TFL API Wrapper
 
+[![rust-clippy analyze](https://github.com/ishantanu/tfl-rust/actions/workflows/rust-clippy.yml/badge.svg)](https://github.com/ishantanu/tfl-rust/actions/workflows/rust-clippy.yml)
+
 A rust crate for using the [Transport for London (TFL) API](https://api.tfl.gov.uk).
 
 *Note: Only the Line API is currently supported. Other APIs are work in progress*
