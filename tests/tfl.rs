@@ -14,7 +14,7 @@ mod tests {
     async fn it_is_expected_version() {
         let client = get_client();
         let ver = client.api_version().fetch().await.unwrap();
-        assert_eq!(ver.version, "master.5988\r\n");
+        assert_eq!(ver.version, "master.6051\r\n");
     }
 
     #[tokio::test]
